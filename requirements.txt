@@ -1,0 +1,4 @@
+# Host-side tools (ingestion). Spark jobs run inside the apache/spark container.
+minio==7.2.10
+python-dotenv==1.0.1
+kaggle==1.6.17

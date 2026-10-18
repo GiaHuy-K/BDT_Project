@@ -1,0 +1,28 @@
+# Dataset (465 MB zip, too large for GitHub) - download with ingestion/ingest.py
+data/*
+!data/.gitkeep
+
+# Runtime logs; copy the final run log into logs/evidence/ to commit it
+logs/*
+!logs/spark-events/
+logs/spark-events/*
+!logs/spark-events/.gitkeep
+!logs/evidence/
+
+# Secrets
+.env
+kaggle.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+~$*
