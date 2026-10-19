@@ -1,6 +1,8 @@
 -- Q2: Which products, agencies and routes have abnormally high return rates?
--- TODO: adjust column names once spark_jobs/gold.py q2_return_rate is implemented
-SELECT *
+SELECT "Producto_ID", product_name, brand, "Agencia_ID", "Town", "State", "Ruta_SAK",
+       sales_units, sales_pesos, return_units, return_pesos, return_rate,
+       threshold_2sigma, is_anomaly
 FROM gold.return_rate_by_product_agency_route
+WHERE is_anomaly = true
 ORDER BY return_rate DESC
-LIMIT 20;
+LIMIT 50;

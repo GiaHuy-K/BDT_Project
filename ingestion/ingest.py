@@ -47,7 +47,8 @@ class HashingReader(io.RawIOBase):
 
 
 def ensure_zip(zip_path: Path) -> None:
-    if zip_path.exists():
+    data_dir = zip_path.parent / "grupo-bimbo-inventory-demand"
+    if zip_path.exists() or data_dir.exists():
         return
     print(f"[ingest] {zip_path} not found, downloading from Kaggle...")
     zip_path.parent.mkdir(parents=True, exist_ok=True)
@@ -58,7 +59,18 @@ def ensure_zip(zip_path: Path) -> None:
 
 
 def iter_csvs(zip_path: Path):
-    """Yield (csv_name, size, stream) for every CSV inside the nested zips."""
+    """Yield (csv_name, size, stream) for every CSV inside directory or nested zips."""
+    data_dir = zip_path.parent / "grupo-bimbo-inventory-demand"
+    if data_dir.is_dir():
+        for p in data_dir.glob("**/*.csv"):
+            if p.is_file() and p.name not in SKIP:
+                f = open(p, "rb")
+                try:
+                    yield p.name, p.stat().st_size, f
+                finally:
+                    f.close()
+        return
+
     with zipfile.ZipFile(zip_path) as outer:
         for name in outer.namelist():
             with zipfile.ZipFile(outer.open(name)) as inner:
