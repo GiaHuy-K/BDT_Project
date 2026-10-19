@@ -1,0 +1,42 @@
+{
+  "source": "kaggle:grupo-bimbo-inventory-demand",
+  "started_at": "2026-10-19T09:26:15.746036+00:00",
+  "files": [
+    {
+      "key": "grupo_bimbo/cliente_tabla/cliente_tabla.csv",
+      "bytes": 21254426,
+      "rows": 935362,
+      "sha256": "6e0ec405eaeb1b2dca4d57a5748ba825868f09e9978c24daae16df8443494b6b",
+      "status": "skipped"
+    },
+    {
+      "key": "grupo_bimbo/producto_tabla/producto_tabla.csv",
+      "bytes": 109549,
+      "rows": 2592,
+      "sha256": "d2b64e05f64a24095b0b82b8a2253919c7bf4271f1eaff6d1e341d2cb5fa7940",
+      "status": "skipped"
+    },
+    {
+      "key": "grupo_bimbo/test/test.csv",
+      "bytes": 251114289,
+      "rows": 6999251,
+      "sha256": "f8a1812e55811d35de1eb002fae077974a9c5b0ff15c3a9940149939116760aa",
+      "status": "skipped"
+    },
+    {
+      "key": "grupo_bimbo/town_state/town_state.csv",
+      "bytes": 29179,
+      "rows": 789,
+      "sha256": "53fd9fd7196d84f8c3dc338eb6c233a93efb36c6b68c1b4249f5135e24225482",
+      "status": "skipped"
+    },
+    {
+      "key": "grupo_bimbo/train/train.csv",
+      "bytes": 3199358223,
+      "rows": 74180464,
+      "sha256": "584764debc73a48befa0b7537af98e6fde97974499d576b38dfa672554988c22",
+      "status": "skipped"
+    }
+  ],
+  "finished_at": "2026-10-19T09:27:05.415265+00:00"
+}

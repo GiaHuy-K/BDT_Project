@@ -10,16 +10,17 @@ x-spark-common: &spark-common
     - ./spark_jobs:/opt/pipeline/spark_jobs
     - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
     - ./logs/spark-events:/tmp/spark-events
+    - ./logs:/opt/pipeline/logs
 
 services:
   minio:
-    image: minio/minio:RELEASE.2024-12-18T13-15-44Z
-    command: server /data --console-address ":9001"
+    # Same MinIO release, Bitnami build: minio/minio is no longer published on Docker Hub
+    image: bitnamilegacy/minio:2024.12.18
     env_file: .env
     ports: ["9000:9000", "9001:9001"]
-    volumes: [minio-data:/data]
+    volumes: [minio-data:/bitnami/minio/data]
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD", "curl", "-fs", "http://localhost:9000/minio/health/live"]
       interval: 5s
       retries: 20
 

@@ -4,6 +4,8 @@
 #        ./run.sh silver     (start from a given step: ingest|bronze|silver|gold|export)
 set -euo pipefail
 cd "$(dirname "$0")"
+# Git Bash on Windows would rewrite container paths like /opt/spark into C:/Program Files/Git/opt/spark
+export MSYS_NO_PATHCONV=1
 
 START="${1:-infra}"
 STEPS=(infra ingest bronze silver gold export)
@@ -25,7 +27,7 @@ run_step() {
     infra)
       docker compose up -d
       echo "== waiting for MinIO and PostgreSQL"
-      until docker compose exec -T minio mc ready local >/dev/null 2>&1; do sleep 2; done
+      until docker compose exec -T minio curl -fs http://localhost:9000/minio/health/live >/dev/null 2>&1; do sleep 2; done
       until docker compose exec -T postgres pg_isready >/dev/null 2>&1; do sleep 2; done ;;
     ingest) python ingestion/ingest.py ;;
     bronze) submit bronze ;;
