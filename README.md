@@ -97,6 +97,8 @@ pip install -r requirements.txt
 ## Trạng thái
 
 - [x] Hạ tầng Docker Compose, ingestion, bronze, export
-- [ ] Silver: các quy tắc làm sạch (TODO trong `spark_jobs/silver.py`)
-- [ ] Gold: Q2–Q4 (TODO trong `spark_jobs/gold.py`)
-- [ ] Dashboard, báo cáo, slide
+- [x] Silver: làm sạch, dedup, tách tên sản phẩm, bảng `rejected`, kiểm tra bất biến
+- [x] Gold: 4 bảng Q1–Q4 (lần chạy bằng chứng: `logs/evidence/run_20261029_205823.log`)
+- [x] Báo cáo (`docs/report/`), dàn ý slide (`docs/slides/`)
+- [ ] Ảnh dashboard Metabase dựng trên dữ liệu thật (`docs/report/dashboard.png`)
+- [ ] Điền tên thành viên vào `docs/contribution.md`

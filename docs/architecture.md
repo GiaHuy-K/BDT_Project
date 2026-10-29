@@ -9,12 +9,12 @@ Hệ thống được thiết kế theo mô hình **Medallion Architecture (Bron
                       │           Kaggle Competition Data         │
                       │       (74.2M rows train.csv, ~3.5 GB)     │
                       └─────────────────────┬─────────────────────┘
-                                            │ Python Ingestion (MD5 & Manifest)
+                                            │ Python Ingestion (SHA-256 & Manifest)
                                             ▼
                       ┌───────────────────────────────────────────┐
                       │          MinIO Object Storage             │
                       │               s3a://raw                   │
-                      │         (Original Immutable CSV)          │
+                      │      (Original CSV, never modified)       │
                       └─────────────────────┬─────────────────────┘
                                             │ PySpark: bronze.py (Schema Enforcement)
                                             ▼
@@ -29,7 +29,7 @@ Hệ thống được thiết kế theo mô hình **Medallion Architecture (Bron
                       │  Silver: Fact Sales + Dimensions + Rejects│
                       │       (Invariant: Fact + Rejects = Train) │
                       └─────────────────────┬─────────────────────┘
-                                            │ PySpark: gold.py (Q1-Q4 Aggregations & ML/Stats)
+                                            │ PySpark: gold.py (Q1-Q4: Window, 2-sigma, rule-based segments)
                                             ▼
                       ┌───────────────────────────────────────────┐
                       │  Gold: Denormalized Aggregates (Parquet)  │
@@ -42,7 +42,7 @@ Hệ thống được thiết kế theo mô hình **Medallion Architecture (Bron
                                             ▼
                       ┌───────────────────────────────────────────┐
                       │          PostgreSQL 16 (Serving)          │
-                      │           Schema: gold (Indexed)          │
+                      │               Schema: gold                │
                       └─────────────────────┬─────────────────────┘
                                             │ SQL Analysis Queries
                                             ▼
@@ -58,9 +58,9 @@ Hệ thống được thiết kế theo mô hình **Medallion Architecture (Bron
 
 | Tầng (Layer) | Công nghệ lựa chọn | Giải pháp thay thế cân nhắc | Lý do lựa chọn (Design Rationale) |
 | :--- | :--- | :--- | :--- |
-| **Ingestion** | Python 3 + MinIO SDK | Bash curl / Manual copy | Tự động hóa tải zip, kiểm tra MD5 checksum chống trùng lặp dữ liệu, sinh manifest metadata cho audit trail. |
+| **Ingestion** | Python 3 + MinIO SDK | Bash curl / Manual copy | Tự động hóa tải zip, kiểm tra SHA-256 checksum để bỏ qua file không đổi, sinh manifest metadata cho audit trail. |
 | **Raw & Processed Storage** | MinIO (S3-compatible Object Storage) | HDFS, Local Filesystem | Nhẹ, dễ triển khai qua Docker, tương thích 100% chuẩn S3 API của cloud hiện đại (AWS S3, GCS). Tách biệt hoàn toàn compute và storage. |
-| **Storage Format** | Apache Parquet (Snappy) | CSV, JSON | Định dạng cột (columnar format) nén tốt gấp 3-4 lần CSV, hỗ trợ predicate pushdown và column pruning, giảm I/O cho Spark. |
+| **Storage Format** | Apache Parquet (Snappy) | CSV, JSON | Định dạng cột (columnar format) đo thực tế: `train` 3,199 MB CSV → 515 MB Parquet Snappy (nhỏ hơn ~6.2 lần), hỗ trợ predicate pushdown và column pruning, giảm I/O cho Spark. |
 | **Processing Engine** | Apache Spark 3.5 (Standalone) | Pandas, MapReduce, Dask | Dữ liệu > 74 triệu dòng vượt giới hạn RAM của Pandas (gây OOM). Spark xử lý song song phân tán (in-memory DAG execution) với Catalyst Optimizer và Tungsten Engine. |
 | **Serving Layer** | PostgreSQL 16 (Schema `gold`) | MySQL, MongoDB, Hive | Hỗ trợ chuẩn ANSI SQL mạnh mẽ, schema relational nhất quán, tốc độ truy vấn phân tích tổng hợp cực nhanh khi dữ liệu đã được Spark nén qua Gold. |
 | **BI & Analytics** | Metabase | Apache Superset, Tableau | Giao diện hiện đại, trực quan, hỗ trợ viết SQL trực tiếp, kết nối native với PostgreSQL, triển khai nhanh gọn qua Docker. |
@@ -73,7 +73,7 @@ Hệ thống được thiết kế theo mô hình **Medallion Architecture (Bron
 Hệ thống thiết lập các chốt kiểm soát chất lượng dữ liệu ở từng chặng:
 
 1. **Ingestion Idempotency & Checksum:**
-   - Script `ingest.py` tính MD5 hash của từng file CSV. Nếu file đã tồn tại và không thay đổi hash trên MinIO, ingestion tự động bỏ qua để tiết kiệm tài nguyên.
+   - Script `ingest.py` tính SHA-256 của từng file CSV trong lúc stream. Nếu file đã tồn tại và không thay đổi hash trên MinIO, ingestion tự động bỏ qua để tiết kiệm tài nguyên.
    - Sinh file manifest `ingest_<timestamp>.json` lưu vết kích thước, ngày nạp, trạng thái.
 
 2. **Schema Enforcement & Partitioning ở Bronze:**
@@ -98,13 +98,13 @@ Hệ thống thiết lập các chốt kiểm soát chất lượng dữ liệu 
 ### Trade-off 1: Batch Processing vs. Real-time Streaming
 - **Lựa chọn:** Batch Processing (chu kỳ theo tuần / ngày).
 - **Phân tích:** Ngành hàng bánh tươi (Grupo Bimbo) có chu kỳ lập kế hoạch sản xuất và tuyến giao nhận cố định theo tuần (`Semana 3 -> 9`). Dữ liệu hoàn hàng (`Dev_proxima`) chỉ được ghi nhận vào chu kỳ giao hàng tiếp theo.
-- **Đánh đổi:** Chấp nhận độ trễ (latency vài chục phút cho batch job) để đổi lấy thông lượng (throughput) cực lớn khi quét 74 triệu dòng, tiết kiệm chi phí hạ tầng so với việc duy trì cluster Kafka + Spark Streaming 24/7.
+- **Đánh đổi:** Chấp nhận độ trễ bằng một lần chạy (lần chạy bằng chứng ngày 29/10/2026 mất 7 phút 16 giây cho toàn bộ pipeline trên 74.2 triệu dòng) để đổi lấy hạ tầng đơn giản, tiết kiệm chi phí hạ tầng so với việc duy trì cluster Kafka + Spark Streaming 24/7.
 
 ### Trade-off 2: Storage Normalization vs. Gold Denormalization
 - **Lựa chọn:** Mô hình chuẩn hóa (Star Schema) ở tầng Silver, Denormalized Summary Table ở tầng Gold.
 - **Phân tích:** Tầng Silver lưu trữ `fact_sales` và 3 bảng chiều (`dim_cliente`, `dim_producto`, `dim_agencia`) để tiết kiệm dung lượng lưu trữ Parquet và dễ bảo trì. Tầng Gold làm phẳng (denormalize) và tính toán sẵn các chỉ số (agg) cho từng câu hỏi kinh doanh.
-- **Đánh đổi:** Tốn thêm một lượng nhỏ dung lượng đĩa ở Gold để đổi lấy tốc độ truy vấn mili-giây trên PostgreSQL/Metabase khi người dùng xem dashboard mà không phải join hàng chục triệu dòng tại thời điểm truy vấn.
+- **Đánh đổi:** Tốn thêm một lượng nhỏ dung lượng đĩa ở Gold để đổi lấy tốc độ truy vấn nhanh trên PostgreSQL/Metabase (query Q4 trên 880,604 dòng `client_segments` mất ~46 ms) khi người dùng xem dashboard mà không phải join hàng chục triệu dòng tại thời điểm truy vấn.
 
 ### Trade-off 3: Data Skew Handling vs. Broadcast Join
 - **Phân tích:** Kênh phân phối 1 (`Canal_ID = 1`) chiếm tới hơn 90% số lượng giao dịch. Nếu shuffle join bảng lớn với bảng lớn sẽ gây nghẽn tại 1 vài partition (data skew).
-- **Giải pháp:** Vì các bảng chiều (`dim_cliente`, `dim_producto`, `dim_agencia`) sau khi làm sạch có kích thước nhỏ (< 50MB), Spark áp dụng `F.broadcast(dim)` chuyển bảng chiều đến từng executor, loại bỏ hoàn toàn giai đoạn shuffle data skew khi tạo `fact_sales`.
+- **Giải pháp:** Vì các bảng chiều (`dim_cliente`, `dim_producto`, `dim_agencia`) sau khi làm sạch có kích thước nhỏ (lớn nhất là `dim_cliente` 10.4 MB Parquet), Spark áp dụng `F.broadcast(dim)` chuyển bảng chiều đến từng executor, nên bảng fact 74.2 triệu dòng không phải shuffle khi join tạo `fact_sales`. AQE skew join vẫn được bật cho các phép `groupBy` ở Gold.

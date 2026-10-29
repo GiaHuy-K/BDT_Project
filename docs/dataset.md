@@ -16,7 +16,7 @@ Nguồn: [Kaggle – Grupo Bimbo Inventory Demand](https://www.kaggle.com/compet
 | Vấn đề | Mức độ | Xử lý |
 | --- | --- | --- |
 | `Cliente_ID` trùng trong `cliente_tabla` | 4,862 ID | Dedup ở silver |
-| Khách hàng "SIN NOMBRE" | 379 dòng | Gắn nhãn unknown |
+| Khách hàng không định danh ("SIN NOMBRE", "NO IDENTIFICADO") | 282,025 ID sau dedup, chiếm 13,259,253 dòng fact (17.9%) | Gắn cờ `is_unknown_client`, tên = `UNKNOWN` |
 | Tên sản phẩm gộp nhiều thông tin | 2,592 sản phẩm | Regex tách pieces, weight, brand |
 | Tên bang không thống nhất, có dấu | – | Đọc UTF-8, chuẩn hóa |
 | Dòng có hàng trả lại | 2.54 triệu (3.4%) | Dùng cho Q2 |
