@@ -61,3 +61,7 @@ Vào mục **+ New** $\to$ **SQL query**, chọn database `Grupo Bimbo Serving D
 1. Nhấn **+ New** $\to$ **Dashboard**, đặt tên: `Grupo Bimbo – Supply Chain Analytics`.
 2. Thêm cả 4 Card đã tạo vào dashboard, sắp xếp layout cân đối (2 biểu đồ trên, 2 bảng/biểu đồ dưới).
 3. Nhấn nút chia sẻ hoặc chụp ảnh màn hình lưu vào thư mục `docs/report/` để đính kèm vào báo cáo bài nộp hoặc slide thuyết trình.
+
+> **Chỉ dựng dashboard sau khi `./run.sh` đã chạy xong bước `export`.** Các bảng `gold.*` phải do Spark ghi từ dữ liệu thật
+> (Q4 có 880,604 khách hàng, Q2 có 1,062,353 dòng). Không chèn dữ liệu mẫu vào PostgreSQL: ảnh dashboard là bằng chứng
+> kết quả phân tích và phải khớp với số liệu trong báo cáo.

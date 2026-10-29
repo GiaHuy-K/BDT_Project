@@ -42,7 +42,7 @@
 * **Bộ dữ liệu:** 74.2 triệu dòng `train.csv` (~3.2 GB), tổng cộng ~3.5 GB raw.
 * **Ingestion tự động:**
   * Script `ingest.py` tải trực tiếp vào MinIO bucket `raw`.
-  * Tính mã băm MD5 để đảm bảo tính bất biến (idempotent), sinh file manifest ghi nhận vết.
+  * Tính SHA-256 khi stream: file không đổi thì bỏ qua (idempotent), sinh manifest (số dòng, SHA-256).
 * **Bronze Layer:**
   * Ép kiểu tĩnh tường minh (`StructType`) loại bỏ rủi ro sai kiểu dữ liệu.
   * Phân vùng theo tuần giao hàng (`partitionBy("Semana")`) giúp tối ưu truy vấn thời gian.
@@ -52,7 +52,7 @@
 ### Slide 5: Tầng Silver — Làm sạch & Bảo toàn Dữ liệu (Invariant Check)
 * **Khử trùng lặp:** 4,862 mã khách hàng trùng lặp trong dimension được dedup và chuẩn hóa text.
 * **Regex trích xuất đặc trưng sản phẩm:** Tách riêng số cái (`pieces`), trọng lượng (`weight_g`), và thương hiệu (`brand`).
-* **Broadcast Join:** Broadcast 3 bảng dimension (< 50MB) sang các worker, loại bỏ hoàn toàn hiện tượng nghẽn mạng do Data Skew ở kênh bán lẻ 1.
+* **Broadcast Join:** Broadcast 3 bảng dimension (tối đa 930,500 dòng) sang các worker, loại bỏ hoàn toàn hiện tượng nghẽn mạng do Data Skew ở kênh bán lẻ 1.
 * **Nguyên tắc Bảo toàn Dữ liệu (Invariant Check):**
   $$\text{fact\_sales (74,180,464 dòng)} + \text{rejected (0 dòng)} = \text{bronze\_train (74,180,464 dòng)}$$
   $\to$ Đảm bảo không thất thoát bất kỳ dòng dữ liệu nào!
@@ -65,16 +65,16 @@
   * Thiết lập ngưỡng kiểm soát thống kê: $\text{Threshold} = \mu_{\text{return\_rate}} + 2\sigma_{\text{return\_rate}}$.
   * Gắn cờ `is_anomaly = True` cho các tuyến đường vượt ngưỡng cảnh báo.
 * **Q3 (Ranking đa chiều):** Dùng `dense_rank()` phân hạng sản phẩm và tính tỷ trọng đóng góp (`revenue_share_pct`) trên tổng doanh thu từng bang.
-* **Q4 (Phân khúc RFM):** Phân loại tự động 930,500 khách hàng thành 5 nhóm: *VIP/High-Value*, *Regular/Loyal*, *High Return Risk*, *Occasional/Churn Risk*, *Standard*.
+* **Q4 (Phân khúc RFM):** Phân loại 880,604 khách hàng có giao dịch thành 6 nhóm theo luật: *VIP/High-Value*, *Regular/Loyal*, *High Return Risk*, *Occasional/Churn Risk*, *Standard*, *Unknown*.
 
 ---
 
-### Slide 7: Kết quả Phân tích & Giá trị Nghiệp vụ
-* **Bảng điều khiển Tổng quan (Metabase Dashboard):**
-![alt text](image.png)
-* **Kênh 1 (Tạp hóa nhỏ):** Chiếm > 90% sản lượng nhưng biên lợi nhuận thấp hơn các kênh bán sỉ.
-* **Nguy cơ trả hàng:** Các dòng bánh mì tươi hạn sử dụng siêu ngắn (< 5 ngày) chiếm 80% giá trị hàng trả tại các đại lý xa trung tâm.
-* **Quy luật Pareto ở khách hàng:** Nhóm VIP chỉ chiếm ~8% số lượng điểm bán nhưng đóng góp tới 62% tổng doanh thu toàn mạng lưới.
+### Slide 7: Kết quả Phân tích & Giá trị Nghiệp vụ (số liệu thật từ `gold.*`)
+* **Biểu đồ:** `docs/report/figures/q1_weekly_demand.png`, `q2_anomalies_by_brand.png`, `q3_brand_share.png`, `q4_segments.png` (vẽ bằng `notebooks/report_figures.py`); dashboard Metabase dựng từ `sql/analysis/`.
+* **Q1:** Nhu cầu ổn định 73.9–79.6 triệu đơn vị/tuần. Kênh 1 chiếm 91% số dòng nhưng 72% số đơn vị; kênh 5 và 8 có tỷ lệ trả ~6%, gấp ~4 lần kênh 1.
+* **Q2:** Ngưỡng μ+2σ = 31.5%; 20,208 / 913,039 tổ hợp sản phẩm×agency×tuyến (2.2%) vượt ngưỡng, giữ 16.5% giá trị hàng trả.
+* **Q3:** BIM 59.8% doanh thu thuần, Marinela 19.1%. Pan Blanco 640g top 3 ở 25/32 bang; Nito 1p 62g đứng đầu 10 bang.
+* **Q4:** 19.4% khách (VIP) tạo 71.3% doanh thu thuần; nhóm High Return Risk (7,834 khách) trả 34.7%, gấp ~20 lần các nhóm khác.
 
 ---
 

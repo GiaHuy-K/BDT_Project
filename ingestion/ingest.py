@@ -34,7 +34,7 @@ class HashingReader(io.RawIOBase):
     """Wraps a stream, computing sha256 and counting lines as it is read."""
 
     def __init__(self, raw):
-        self.raw, self.sha, self.lines = raw, hashlib.sha256(), 0
+        self.raw, self.sha, self.lines, self.last = raw, hashlib.sha256(), 0, b"\n"
 
     def readable(self):
         return True
@@ -43,7 +43,14 @@ class HashingReader(io.RawIOBase):
         chunk = self.raw.read(n)
         self.sha.update(chunk)
         self.lines += chunk.count(b"\n")
+        if chunk:
+            self.last = chunk[-1:]
         return chunk
+
+    @property
+    def rows(self) -> int:
+        """Data rows: newline count minus the header, plus a last line with no trailing newline."""
+        return self.lines - 1 + (self.last != b"\n")
 
 
 def ensure_zip(zip_path: Path) -> None:
@@ -58,26 +65,42 @@ def ensure_zip(zip_path: Path) -> None:
     )
 
 
+def iter_zip(zf: zipfile.ZipFile):
+    """Yield (csv_name, size, stream) for every CSV in an inner zip."""
+    for info in zf.infolist():
+        if info.filename.endswith(".csv") and info.filename not in SKIP:
+            with zf.open(info) as stream:
+                yield info.filename, info.file_size, stream
+
+
 def iter_csvs(zip_path: Path):
-    """Yield (csv_name, size, stream) for every CSV inside directory or nested zips."""
+    """Yield (csv_name, size, stream) for every CSV, from the extracted folder or the nested zips.
+
+    The extracted Kaggle folder holds one <table>.csv.zip per table, possibly already unzipped
+    to <table>.csv, so both forms are accepted.
+    """
     data_dir = zip_path.parent / "grupo-bimbo-inventory-demand"
     if data_dir.is_dir():
-        for p in data_dir.glob("**/*.csv"):
-            if p.is_file() and p.name not in SKIP:
-                f = open(p, "rb")
-                try:
+        found = 0
+        for p in sorted(data_dir.glob("**/*")):
+            if not p.is_file() or p.name in SKIP or p.name.removesuffix(".zip") in SKIP:
+                continue
+            if p.suffix == ".csv":
+                found += 1
+                with open(p, "rb") as f:
                     yield p.name, p.stat().st_size, f
-                finally:
-                    f.close()
+            elif p.name.endswith(".csv.zip") and not p.with_name(p.stem).exists():
+                found += 1
+                with zipfile.ZipFile(p) as inner:
+                    yield from iter_zip(inner)
+        if not found:
+            raise SystemExit(f"[ingest] no .csv or .csv.zip files found in {data_dir}")
         return
 
     with zipfile.ZipFile(zip_path) as outer:
         for name in outer.namelist():
             with zipfile.ZipFile(outer.open(name)) as inner:
-                for info in inner.infolist():
-                    if info.filename.endswith(".csv") and info.filename not in SKIP:
-                        with inner.open(info) as stream:
-                            yield info.filename, info.file_size, stream
+                yield from iter_zip(inner)
 
 
 def main() -> int:
@@ -118,7 +141,7 @@ def main() -> int:
                 pass
             if reader.sha.hexdigest() == existing:
                 print(f"[ingest] skip {key} (unchanged)")
-                manifest["files"].append({"key": key, "bytes": size, "rows": reader.lines - 1,
+                manifest["files"].append({"key": key, "bytes": size, "rows": reader.rows,
                                           "sha256": existing, "status": "skipped"})
                 continue
             print(f"[ingest] {key} differs from stored copy; re-run with --force", file=sys.stderr)
@@ -131,7 +154,7 @@ def main() -> int:
         digest = reader.sha.hexdigest()
         client.copy_object(bucket, key, CopySource(bucket, key),
                            metadata={"sha256": digest}, metadata_directive="REPLACE")
-        manifest["files"].append({"key": key, "bytes": size, "rows": reader.lines - 1,
+        manifest["files"].append({"key": key, "bytes": size, "rows": reader.rows,
                                   "sha256": digest, "status": "uploaded"})
 
     manifest["finished_at"] = dt.datetime.now(dt.timezone.utc).isoformat()

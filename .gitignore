@@ -1,6 +1,8 @@
 # Dataset (465 MB zip, too large for GitHub) - download with ingestion/ingest.py
 data/*
 !data/.gitkeep
+grupo-bimbo-inventory-demand/
+grupo-bimbo-inventory-demand.zip
 
 # Runtime logs; copy the final run log into logs/evidence/ to commit it
 logs/*
