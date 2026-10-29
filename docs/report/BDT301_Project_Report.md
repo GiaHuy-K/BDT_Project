@@ -8,6 +8,7 @@
 * **Trọng số:** 25%
 * **Tập dữ liệu:** Grupo Bimbo Inventory Demand (~3.5 GB raw, 74.2 triệu dòng)
 * **Kho lưu trữ:** `https://github.com/GiaHuy-K/BDT_Project`
+* **Nhóm 3:** Khổng Trần Gia Huy · Bùi Anh Duy · Nguyễn Võ Tuấn Kiệt (phân công chi tiết: [`docs/contribution.md`](../contribution.md))
 
 ---
 
@@ -129,7 +130,15 @@ Mọi số liệu dưới đây lấy từ 4 bảng `gold.*` trong PostgreSQL, s
 
 Các biểu đồ trong mục này được vẽ trực tiếp từ các bảng `gold.*` bằng script [`make_figures.py`](make_figures.py) (chạy lại: `python docs/report/make_figures.py`). Dashboard Metabase dùng cùng các bảng này.
 
-<!-- TODO: chèn ảnh chụp dashboard Metabase (docs/report/dashboard.png) sau khi dựng xong -->
+Dashboard Metabase `Grupo Bimbo` đọc trực tiếp schema `gold` trong PostgreSQL. Câu SQL của từng thẻ nằm trong [`dashboard/cards.sql`](../../dashboard/cards.sql).
+
+**Tab "Tổng quan Q1–Q4":** thẻ lớn bên trái là Q4 (tỷ trọng số điểm bán so với doanh thu theo phân khúc); bên phải là Q1 (nhu cầu theo tuần), Q2 (tỷ trọng của nhóm tổ hợp dị biệt) và Q3 (thị phần brand).
+
+![Dashboard Metabase – tổng quan Q1–Q4](dashboard.png)
+
+**Tab "Chi tiết":** tỷ lệ trả hàng theo tuần (Q1) và bảng 15 tổ hợp dị biệt có giá trị trả lớn nhất (Q2).
+
+![Dashboard Metabase – chi tiết Q1, Q2](dashboard_detail.png)
 
 ### 5.1. Kết quả Q1: Xu hướng Nhu cầu và Doanh thu qua các Tuần
 

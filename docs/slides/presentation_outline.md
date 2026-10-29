@@ -7,12 +7,10 @@
 ### Slide 1: Giới thiệu Dự án & Thành viên
 * **Tiêu đề:** Xây dựng Pipeline Big Data Phân tích Nhu cầu & Hàng trả lại trong Chuỗi phân phối Grupo Bimbo.
 * **Môn học:** BDT301 – Big Data Technologies.
-* **Thành viên & Phân công:**
-  1. *Thành viên 1:* Ingestion & Hạ tầng Docker (MinIO, PostgreSQL, Spark Master/Workers).
-  2. *Thành viên 2:* Spark Processing (Tầng Bronze & Silver, Data Cleaning, Invariant Check).
-  3. *Thành viên 3:* Spark Processing (Tầng Gold, Thuật toán Anomaly Detection, Phân khúc RFM).
-  4. *Thành viên 4:* Phân tích SQL, Serving Layer & Xây dựng Metabase Dashboard.
-  5. *Thành viên 5:* Tích hợp Pipeline (`run.sh`), Tài liệu kỹ thuật & Đánh giá Trade-offs.
+* **Nhóm 3 · Thành viên & Phân công:**
+  1. *Khổng Trần Gia Huy:* Chọn dataset, Checkpoint 1 (proposal, cấu trúc repo, Docker, ingestion, bronze).
+  2. *Bùi Anh Duy:* Checkpoint 2 (tầng silver, kiểm tra bất biến, chạy pipeline trên toàn bộ dữ liệu).
+  3. *Nguyễn Võ Tuấn Kiệt:* Checkpoint 3 (tầng gold Q1–Q4, SQL phân tích, dashboard, báo cáo).
 
 ---
 
@@ -70,7 +68,7 @@
 ---
 
 ### Slide 7: Kết quả Phân tích & Giá trị Nghiệp vụ
-* **Biểu đồ (vẽ từ bảng `gold.*`):** `docs/report/figures/q1_weekly_trend.png`, `q2_anomaly_share.png`, `q3_brand_share.png`, `q4_segments.png`. Khi demo, mở dashboard Metabase dựng trên cùng các bảng.
+* **Biểu đồ (vẽ từ bảng `gold.*`):** `docs/report/figures/q1_weekly_trend.png`, `q2_anomaly_share.png`, `q3_brand_share.png`, `q4_segments.png`. Ảnh dashboard Metabase: `docs/report/dashboard.png` (tổng quan Q1–Q4) và `dashboard_detail.png` (chi tiết); khi demo mở trực tiếp dashboard `Grupo Bimbo`.
 * **Q1:** Nhu cầu ổn định 73.9–79.6 triệu đơn vị/tuần, nhưng hàng trả tăng 27.6% từ tuần 3 đến tuần 9 (tỷ lệ trả/nhu cầu 1.66% → 2.19%). Kênh 1 có 91% số dòng nhưng chỉ 61.8% doanh thu; kênh 2 có 9.6% nhu cầu nhưng 18.5% doanh thu.
 * **Q2:** 20,208 tổ hợp dị biệt (2.2%) chỉ tạo 0.5% doanh thu nhưng chiếm 16.6% giá trị hàng trả.
 * **Q3:** Pan Blanco 640g nằm trong top 3 ở 25/32 bang; brand BIM chiếm 59.8% doanh thu thuần, MLA 19.1%, TR 8.7%.

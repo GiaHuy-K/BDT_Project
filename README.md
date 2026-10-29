@@ -100,5 +100,5 @@ pip install -r requirements.txt
 - [x] Silver: làm sạch, dedup, tách tên sản phẩm, bảng `rejected`, kiểm tra bất biến
 - [x] Gold: 4 bảng Q1–Q4 (lần chạy bằng chứng: `logs/evidence/run_20261029_205823.log`)
 - [x] Báo cáo (`docs/report/`), dàn ý slide (`docs/slides/`)
-- [ ] Ảnh dashboard Metabase dựng trên dữ liệu thật (`docs/report/dashboard.png`)
-- [ ] Điền tên thành viên vào `docs/contribution.md`
+- [x] Dashboard Metabase Q1–Q4 (SQL: `dashboard/cards.sql`, ảnh: `docs/report/dashboard.png`)
+- [x] Bảng phân công 3 thành viên (`docs/contribution.md`)
