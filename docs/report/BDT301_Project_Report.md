@@ -127,7 +127,9 @@ Mọi số liệu dưới đây lấy từ 4 bảng `gold.*` trong PostgreSQL, s
 | `product_ranking_by_state` | 17,604 | Q3 |
 | `client_segments` | 880,604 | Q4 |
 
-<!-- TODO: chèn ảnh chụp dashboard Metabase dựng trên dữ liệu thật (docs/report/dashboard.png) -->
+Các biểu đồ trong mục này được vẽ trực tiếp từ các bảng `gold.*` bằng script [`make_figures.py`](make_figures.py) (chạy lại: `python docs/report/make_figures.py`). Dashboard Metabase dùng cùng các bảng này.
+
+<!-- TODO: chèn ảnh chụp dashboard Metabase (docs/report/dashboard.png) sau khi dựng xong -->
 
 ### 5.1. Kết quả Q1: Xu hướng Nhu cầu và Doanh thu qua các Tuần
 
@@ -141,6 +143,8 @@ Mọi số liệu dưới đây lấy từ 4 bảng `gold.*` trong PostgreSQL, s
 | 8 | 75.53 | 713.4 | 1.45 | 1.92% |
 | 9 | 75.05 | 716.0 | 1.64 | 2.19% |
 
+![Q1: nhu cầu theo tuần và tỷ lệ trả hàng](figures/q1_weekly_trend.png)
+
 * **Phát hiện:**
   * Nhu cầu toàn quốc ổn định trong khoảng 73.9–79.6 triệu đơn vị/tuần. Tuần 9 thấp hơn tuần 3 khoảng 3.4%, nhưng lượng hàng trả lại tăng 27.6% (1.29 → 1.64 triệu đơn vị), làm tỷ lệ trả/nhu cầu tăng từ 1.66% lên 2.19%.
   * Kênh 1 chiếm 91% số dòng giao dịch nhưng chỉ 72.2% nhu cầu và 61.8% doanh thu. Kênh 2 chỉ có 9.6% nhu cầu nhưng mang về 18.5% doanh thu, nên giá trị mỗi đơn vị cao hơn hẳn. Kênh 5 và kênh 8 có tỷ lệ trả theo giá trị cao nhất (5.3% và 4.2%, so với mức chung 1.8%).
@@ -148,6 +152,8 @@ Mọi số liệu dưới đây lấy từ 4 bảng `gold.*` trong PostgreSQL, s
 * **Khuyến nghị:** Theo dõi xu hướng hàng trả tăng dần từ tuần 6 trước khi tăng sản lượng. Ưu tiên rà soát lượng giao cho kênh 5 và kênh 8. Lưu ý: dataset không công bố tên các kênh, nên nhóm chỉ so sánh theo mã `Canal_ID`.
 
 ### 5.2. Kết quả Q2: Tổ hợp Sản phẩm × Agency × Tuyến có Tỷ lệ Trả hàng Dị biệt
+
+![Q2: tỷ trọng của nhóm tổ hợp dị biệt](figures/q2_anomaly_share.png)
 
 * **Phát hiện:**
   * Tỷ lệ trả chung trên toàn bộ tổ hợp là 1.70% theo đơn vị. Trong 913,039 tổ hợp bán ≥ 20 đơn vị, ngưỡng $\mu + 2\sigma$ là **31.52%**.
@@ -158,6 +164,8 @@ Mọi số liệu dưới đây lấy từ 4 bảng `gold.*` trong PostgreSQL, s
 * **Khuyến nghị:** Ưu tiên rà soát 20,208 tổ hợp dị biệt, bắt đầu từ các tổ hợp có `return_pesos` lớn nhất. Giảm lượng giao ban đầu hoặc chuyển sang giao bổ sung tại các tuyến này. Đây là nhóm nhỏ nhưng tác động lớn tới chi phí hàng trả.
 
 ### 5.3. Kết quả Q3: Xếp hạng Sản phẩm và Thị phần Thương hiệu theo Bang
+
+![Q3: thị phần doanh thu theo brand](figures/q3_brand_share.png)
 
 * **Phát hiện:**
   * *Pan Blanco 640g* (`Producto_ID` 2233) nằm trong top 3 doanh thu ở **25/32 bang** và đứng hạng 1 ở 11 bang. Các phiên bản *Nito 1p 62g* (2425, 1278, 43206) đứng hạng 1 ở tổng cộng 15 bang.
@@ -175,6 +183,8 @@ Mọi số liệu dưới đây lấy từ 4 bảng `gold.*` trong PostgreSQL, s
 | Standard | 228,584 | 26.0% | 3.2% | 2.65% |
 | High Return Risk | 7,834 | 0.9% | 0.2% | 45.84% |
 | Occasional / Churn Risk | 30,579 | 3.5% | 0.1% | 1.86% |
+
+![Q4: tỷ trọng số điểm bán và doanh thu theo phân khúc](figures/q4_segments.png)
 
 * **Phát hiện:**
   * Nhóm VIP chiếm 19.4% số điểm bán nhưng mang về **71.3% doanh thu thuần**. Riêng 1% điểm bán lớn nhất đã chiếm 33.2% doanh thu.

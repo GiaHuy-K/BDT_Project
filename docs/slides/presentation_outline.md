@@ -70,7 +70,7 @@
 ---
 
 ### Slide 7: Kết quả Phân tích & Giá trị Nghiệp vụ
-* **Bảng điều khiển Tổng quan (Metabase Dashboard):** <!-- TODO: chèn ảnh dashboard dựng trên dữ liệu thật -->
+* **Biểu đồ (vẽ từ bảng `gold.*`):** `docs/report/figures/q1_weekly_trend.png`, `q2_anomaly_share.png`, `q3_brand_share.png`, `q4_segments.png`. Khi demo, mở dashboard Metabase dựng trên cùng các bảng.
 * **Q1:** Nhu cầu ổn định 73.9–79.6 triệu đơn vị/tuần, nhưng hàng trả tăng 27.6% từ tuần 3 đến tuần 9 (tỷ lệ trả/nhu cầu 1.66% → 2.19%). Kênh 1 có 91% số dòng nhưng chỉ 61.8% doanh thu; kênh 2 có 9.6% nhu cầu nhưng 18.5% doanh thu.
 * **Q2:** 20,208 tổ hợp dị biệt (2.2%) chỉ tạo 0.5% doanh thu nhưng chiếm 16.6% giá trị hàng trả.
 * **Q3:** Pan Blanco 640g nằm trong top 3 ở 25/32 bang; brand BIM chiếm 59.8% doanh thu thuần, MLA 19.1%, TR 8.7%.
