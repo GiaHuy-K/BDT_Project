@@ -61,7 +61,7 @@ Phân vùng lưu trữ trong MinIO:
 
 ## Yêu cầu
 
-- Docker Desktop (khuyến nghị cấp ≥ 8 GB RAM) và **≥ 40 GB trống trên ổ chứa dữ liệu Docker**: raw 3.3 GB + bronze/silver/gold ~1.8 GB trong MinIO, cộng image và vùng tạm của Spark. Trên Windows, dữ liệu Docker mặc định nằm ở ổ C (`%LOCALAPPDATA%\Docker\wsl`); nếu C chật, đổi vị trí trong Docker Desktop → Settings → Resources → Advanced → *Disk image location*.
+- Docker Desktop (khuyến nghị cấp ≥ 8 GB RAM) và **≥ 40 GB trống trên ổ chứa dữ liệu Docker** (raw 3.3 GB + các tầng Parquet trong MinIO, image, vùng tạm của Spark). Trên Windows dữ liệu Docker mặc định ở ổ C (`%LOCALAPPDATA%\Docker\wsl`); nếu C chật, đổi trong Docker Desktop → Settings → Resources → Advanced → *Disk image location*.
 - Python 3.10+ và Git Bash (Windows) để chạy `run.sh` (`run.sh` tự đặt `MSYS_NO_PATHCONV=1` để Git Bash không đổi đường dẫn `/opt/spark/...` trong container)
 - Tài khoản Kaggle đã bấm "Join competition" và file `~/.kaggle/kaggle.json` (chỉ cần nếu `data/` chưa có zip)
 
@@ -92,31 +92,16 @@ pip install -r requirements.txt
 
 - `logs/run_<timestamp>.log` chứa log toàn bộ lần chạy, kể cả `applicationId` của từng Spark job.
 - `logs/ingest_<timestamp>.json` là manifest ingestion (số dòng, sha256).
-- `logs/silver_quality_<applicationId>.json` là báo cáo chất lượng silver (số dòng theo quy tắc, cờ, invariant).
-- Bảng `gold.*` trong PostgreSQL; query trả lời Q1–Q4 nằm ở `sql/analysis/`.
-- Một lần chạy đầy đủ mất khoảng 13–15 phút trên máy 12 CPU / 8 GB RAM cho Docker.
+- Bảng `gold.*` trong PostgreSQL; query mẫu nằm ở `sql/analysis/`.
+- Biểu đồ của báo cáo vẽ lại từ PostgreSQL bằng `python docs/report/make_figures.py`.
 
-Số dòng mong đợi (lần chạy chính thức lưu ở `logs/evidence/`):
-
-| Tầng | Bảng | Số dòng |
-| --- | --- | --- |
-| bronze | train / test / cliente_tabla / producto_tabla / town_state | 74,180,464 / 6,999,251 / 935,362 / 2,592 / 790 |
-| silver | fact_sales + rejected | 74,180,464 + 0 (`invariant_ok: true`) |
-| gold | Q1 / Q2 / Q3 / Q4 | 1,393 / 1,062,353 / 17,604 / 880,604 |
-
-Nếu máy đã cài sẵn PostgreSQL chiếm cổng 5432, đổi `POSTGRES_PORT` trong `.env` (ví dụ 5433) rồi `docker compose up -d postgres`. Spark, Metabase và script vẽ biểu đồ đều kết nối trong mạng Docker nên không bị ảnh hưởng.
-
-Biểu đồ trong báo cáo được vẽ lại từ PostgreSQL sau khi pipeline chạy xong:
-
-```bash
-python notebooks/report_figures.py
-```
+Nếu máy đã cài sẵn PostgreSQL chiếm cổng 5432, đổi `POSTGRES_PORT` trong `.env` (ví dụ 5433) rồi `docker compose up -d postgres`. Spark, Metabase và script vẽ biểu đồ kết nối trong mạng Docker nên không bị ảnh hưởng.
 
 ## Trạng thái
 
 - [x] Hạ tầng Docker Compose, ingestion, bronze, export
-- [x] Silver: làm sạch, dedup, quy tắc loại dòng, invariant, báo cáo chất lượng
-- [x] Gold: Q1–Q4
-- [x] Báo cáo (`docs/report/`), dàn ý slide (`docs/slides/`), biểu đồ từ dữ liệu thật
-- [ ] Dashboard Metabase: dựng lại từ dữ liệu thật theo `dashboard/README.md` và chụp ảnh vào `docs/report/`
-- [ ] Slide hoàn chỉnh và điền `docs/contribution.md`
+- [x] Silver: làm sạch, dedup, tách tên sản phẩm, bảng `rejected`, kiểm tra bất biến
+- [x] Gold: 4 bảng Q1–Q4 (lần chạy bằng chứng: `logs/evidence/run_20261029_205823.log`)
+- [x] Báo cáo (`docs/report/`), dàn ý slide (`docs/slides/`)
+- [x] Dashboard Metabase Q1–Q4 (SQL: `dashboard/cards.sql`, ảnh: `docs/report/dashboard.png`)
+- [x] Bảng phân công 3 thành viên (`docs/contribution.md`)
