@@ -38,6 +38,7 @@ Hệ thống được thiết kế theo mô hình **Medallion Architecture (Bron
                       │   - product_ranking_by_state              │
                       │   - client_segments                       │
                       └─────────────────────┬─────────────────────┘
+                                            │ PySpark + MLlib: forecast.py (GBT, dự báo tuần 10-11)
                                             │ PySpark: export_postgres.py (JDBC)
                                             ▼
                       ┌───────────────────────────────────────────┐
@@ -98,7 +99,7 @@ Hệ thống thiết lập các chốt kiểm soát chất lượng dữ liệu 
 ### Trade-off 1: Batch Processing vs. Real-time Streaming
 - **Lựa chọn:** Batch Processing (chu kỳ theo tuần / ngày).
 - **Phân tích:** Ngành hàng bánh tươi (Grupo Bimbo) có chu kỳ lập kế hoạch sản xuất và tuyến giao nhận cố định theo tuần (`Semana 3 -> 9`). Dữ liệu hoàn hàng (`Dev_proxima`) chỉ được ghi nhận vào chu kỳ giao hàng tiếp theo.
-- **Đánh đổi:** Chấp nhận độ trễ bằng một lần chạy (lần chạy bằng chứng ngày 29/10/2026 mất 7 phút 16 giây cho toàn bộ pipeline trên 74.2 triệu dòng) để đổi lấy hạ tầng đơn giản, tiết kiệm chi phí hạ tầng so với việc duy trì cluster Kafka + Spark Streaming 24/7.
+- **Đánh đổi:** Chấp nhận độ trễ bằng một lần chạy (lần chạy bằng chứng ngày 04/11/2026 mất khoảng 19 phút cho 5 bước Spark trên 74.2 triệu dòng) để đổi lấy hạ tầng đơn giản, tiết kiệm chi phí hạ tầng so với việc duy trì cluster Kafka + Spark Streaming 24/7.
 
 ### Trade-off 2: Storage Normalization vs. Gold Denormalization
 - **Lựa chọn:** Mô hình chuẩn hóa (Star Schema) ở tầng Silver, Denormalized Summary Table ở tầng Gold.

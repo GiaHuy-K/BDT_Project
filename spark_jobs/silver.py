@@ -5,6 +5,7 @@ Output tables (s3a://processed/silver/...):
   dim_producto  - name split into short name, pieces, weight_g, brand
   dim_agencia   - Agencia_ID -> town, normalized state
   fact_sales    - valid train rows joined with the 3 dims, + net_revenue, return_rate, quality flags
+                  (is_outlier: one threshold for all rows; is_outlier_channel: one threshold per channel)
   rejected      - train rows failing quality rules, with a `reason` column
 
 Invariant checked at the end: fact_sales + rejected == bronze train (no row lost or duplicated).
@@ -117,10 +118,16 @@ def build_fact(
         "Demanda_uni_equil", [OUTLIER_QUANTILE], 0.0001
     )[0]
 
+    # EDA: order sizes differ ~34x between channels, so a single threshold mostly flags channels 2 and 5.
+    channel_thresholds = train.filter(F.col("Demanda_uni_equil") >= 0).groupBy("Canal_ID").agg(
+        F.expr(f"percentile_approx(Demanda_uni_equil, {OUTLIER_QUANTILE}, 10000)").alias("channel_outlier_threshold")
+    )
+
     joined = (
         train.join(F.broadcast(cli), "Cliente_ID", "left")
         .join(F.broadcast(prod), "Producto_ID", "left")
         .join(F.broadcast(ag), "Agencia_ID", "left")
+        .join(F.broadcast(channel_thresholds), "Canal_ID", "left")
     )
     # First failing rule wins; order = most severe first.
     reason = (
@@ -148,6 +155,7 @@ def build_fact(
             F.when(F.col("Venta_uni_hoy") > 0, F.round(F.col("Venta_hoy") / F.col("Venta_uni_hoy"), 2)),
         )
         .withColumn("is_outlier", F.col("Demanda_uni_equil") > F.lit(threshold))
+        .withColumn("is_outlier_channel", F.col("Demanda_uni_equil") > F.col("channel_outlier_threshold"))
         .withColumn("is_zero_demand", F.col("Demanda_uni_equil") == 0)
         # Returns relate to earlier deliveries, so they may exceed this week's sales: flag, keep.
         .withColumn("returns_exceed_sales", F.col("Dev_uni_proxima") > F.col("Venta_uni_hoy"))
@@ -169,7 +177,8 @@ def quality_report(spark: SparkSession, threshold: float) -> dict:
     flags = fact.agg(
         F.count("*").alias("rows"),
         *[F.sum(F.col(c).cast("int")).alias(c) for c in
-          ["is_outlier", "is_zero_demand", "returns_exceed_sales", "demand_mismatch", "is_unknown_client"]],
+          ["is_outlier", "is_outlier_channel", "is_zero_demand", "returns_exceed_sales", "demand_mismatch",
+           "is_unknown_client"]],
         F.round(F.sum("net_revenue"), 2).alias("net_revenue_total"),
     ).first().asDict()
     prod = read("dim_producto")
@@ -189,6 +198,12 @@ def quality_report(spark: SparkSession, threshold: float) -> dict:
         "rejected_by_reason": {r["reason"]: r["count"] for r in rejected.groupBy("reason").count().collect()},
         "fact_flags": flags,
         "outlier_threshold_demand": threshold,
+        "outliers_by_channel": [r.asDict() for r in fact.groupBy("Canal_ID").agg(
+            F.first("channel_outlier_threshold").alias("threshold"), F.count("*").alias("rows"),
+            F.sum(F.col("is_outlier").cast("long")).alias("flagged_global"),
+            F.sum(F.col("is_outlier_channel").cast("long")).alias("flagged_channel"),
+            F.sum((F.col("is_outlier_channel") & ~F.col("is_outlier")).cast("long")).alias("only_channel"),
+        ).orderBy("Canal_ID").collect()],
         "fact_rows_by_week": {r["Semana"]: r["count"] for r in fact.groupBy("Semana").count().orderBy("Semana").collect()},
         "dim_cliente": {
             "bronze_rows": bronze("cliente_tabla").count(),

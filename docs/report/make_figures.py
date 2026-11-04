@@ -18,8 +18,9 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent / "figures"
 
 # Reference palette (dataviz skill): categorical slots 1-2, text and grid tokens.
-BLUE, ORANGE = "#2a78d6", "#eb6834"
-INK, INK_2, GRID, SURFACE = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb"
+TEAL, CORAL = "#008f7f", "#d9622b"
+plt.rcParams["font.family"] = "Calibri"
+INK, INK_2, GRID, SURFACE = "#0b0b0b", "#52514e", "#e4e3df", "#ffffff"
 
 
 def query(sql: str) -> list[dict]:
@@ -60,14 +61,14 @@ def q1() -> None:
     rate = [100 * int(r["returns"]) / int(r["demand"]) for r in rows]
 
     fig, (a, b) = plt.subplots(1, 2, figsize=(12, 4.6), facecolor=SURFACE)
-    a.plot(weeks, demand, color=BLUE, linewidth=2, marker="o", markersize=7)
+    a.plot(weeks, demand, color=TEAL, linewidth=2, marker="o", markersize=7)
     a.set_ylim(0, max(demand) * 1.15)
     style(a, "Nhu cầu ổn định", "Nhu cầu toàn quốc, triệu đơn vị / tuần")
     for x, y in [(weeks[0], demand[0]), (weeks[-1], demand[-1])]:
         a.annotate(f"{y:.1f}", (x, y), textcoords="offset points", xytext=(0, 10),
                    ha="center", fontsize=11, color=INK)
 
-    b.plot(weeks, rate, color=ORANGE, linewidth=2, marker="o", markersize=7)
+    b.plot(weeks, rate, color=CORAL, linewidth=2, marker="o", markersize=7)
     b.set_ylim(0, max(rate) * 1.25)
     style(b, "…nhưng tỷ lệ trả hàng tăng", "Hàng trả / nhu cầu, % theo tuần")
     for x, y in [(weeks[0], rate[0]), (weeks[-1], rate[-1])]:
@@ -91,7 +92,7 @@ def q2() -> None:
     vals = [float(r["combos"]), float(r["sales"]), float(r["returns"])]
 
     fig, ax = plt.subplots(figsize=(12, 4.2), facecolor=SURFACE)
-    colors = [INK_2, INK_2, ORANGE]
+    colors = [INK_2, INK_2, CORAL]
     ax.barh(labels[::-1], vals[::-1], color=colors[::-1], height=0.5)
     for i, v in enumerate(vals[::-1]):
         ax.text(v + 0.3, i, f"{v:.1f}%", va="center", fontsize=12, color=INK)
@@ -115,7 +116,7 @@ def q3() -> None:
     vals = [float(r["share"]) for r in top] + [other]
 
     fig, ax = plt.subplots(figsize=(12, 4.6), facecolor=SURFACE)
-    colors = [BLUE] + [INK_2] * (len(vals) - 1)
+    colors = [TEAL] + [INK_2] * (len(vals) - 1)
     ax.barh(labels[::-1], vals[::-1], color=colors[::-1], height=0.55)
     for i, v in enumerate(vals[::-1]):
         ax.text(v + 0.6, i, f"{v:.1f}%", va="center", fontsize=12, color=INK)
@@ -142,7 +143,7 @@ def q4() -> None:
     xs = range(len(segs))
     w = 0.38
     ax.bar([x - w / 2 - 0.01 for x in xs], clients, width=w, color=INK_2, label="% số điểm bán")
-    ax.bar([x + w / 2 + 0.01 for x in xs], revenue, width=w, color=BLUE, label="% doanh thu thuần")
+    ax.bar([x + w / 2 + 0.01 for x in xs], revenue, width=w, color=TEAL, label="% doanh thu thuần")
     for x, c, v in zip(xs, clients, revenue):
         ax.text(x - w / 2, c + 1, f"{c:.1f}", ha="center", fontsize=10.5, color=INK_2)
         ax.text(x + w / 2, v + 1, f"{v:.1f}", ha="center", fontsize=10.5, color=INK)

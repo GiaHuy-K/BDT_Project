@@ -17,6 +17,9 @@ GOLD_TABLES = [
     "return_rate_by_product_agency_route",  # Q2
     "product_ranking_by_state",             # Q3
     "client_segments",                      # Q4
+    "outliers_by_channel",                  # data quality: per-channel outlier thresholds
+    "forecast_metrics",                     # forecast.py: accuracy on week 9
+    "forecast_demand_by_state_channel",     # forecast.py: predicted units for weeks 10-11
 ]
 
 JDBC_URL = (

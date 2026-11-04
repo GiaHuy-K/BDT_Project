@@ -1,3 +1,5 @@
+> **Bản slide cuối cùng:** `docs/slides/BDT301 - Grupo Bimbo Pipeline (co EDA).pptx` (33 slide, có EDA, ngưỡng theo kênh và dự báo). Dàn ý dưới đây là bản trước đó; số liệu thời gian và bằng chứng mới nhất xem `logs/evidence/README.md`.
+
 # BDT301 Group Project Presentation: Slide Deck & Demo Script
 ## End-to-End Big Data Analytics Pipeline: Grupo Bimbo
 **Thời lượng trình bày:** 10–15 phút (+ Demo & Q&A)

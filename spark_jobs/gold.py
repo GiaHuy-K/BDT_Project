@@ -130,6 +130,19 @@ def q4_client_segments(fact: DataFrame) -> DataFrame:
     return client_agg.withColumn("segment", segment)
 
 
+def channel_outliers(fact: DataFrame) -> DataFrame:
+    """Outliers against each channel's own threshold, next to the single global threshold."""
+    return fact.groupBy("Canal_ID").agg(
+        F.first("channel_outlier_threshold").alias("channel_threshold"),
+        F.count("*").alias("rows"),
+        F.sum(F.col("is_outlier").cast("long")).alias("flagged_global"),
+        F.sum(F.col("is_outlier_channel").cast("long")).alias("flagged_channel"),
+        F.sum((F.col("is_outlier_channel") & ~F.col("is_outlier")).cast("long")).alias("newly_flagged"),
+    ).withColumn("flagged_global_pct", F.round(F.col("flagged_global") / F.col("rows") * 100, 3)).withColumn(
+        "flagged_channel_pct", F.round(F.col("flagged_channel") / F.col("rows") * 100, 3)
+    )
+
+
 def main() -> None:
     spark = get_spark("bimbo-gold")
     fact = spark.read.parquet(f"{config.SILVER}/fact_sales")
@@ -138,6 +151,7 @@ def main() -> None:
         "return_rate_by_product_agency_route": q2_return_rate,
         "product_ranking_by_state": q3_product_ranking,
         "client_segments": q4_client_segments,
+        "outliers_by_channel": channel_outliers,
     }
     for name, build in builders.items():
         try:

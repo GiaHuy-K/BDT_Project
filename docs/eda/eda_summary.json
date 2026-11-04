@@ -1,0 +1,569 @@
+{
+  "tables": {
+    "train": {
+      "rows": 74180464,
+      "columns": 11,
+      "nulls": 0
+    },
+    "test": {
+      "rows": 6999251,
+      "columns": 7,
+      "nulls": 0
+    },
+    "cliente_tabla": {
+      "rows": 935362,
+      "columns": 2,
+      "nulls": 0
+    },
+    "producto_tabla": {
+      "rows": 2592,
+      "columns": 2,
+      "nulls": 0
+    },
+    "town_state": {
+      "rows": 790,
+      "columns": 3,
+      "nulls": 0
+    }
+  },
+  "train_distinct": {
+    "Semana": 7,
+    "Agencia_ID": 552,
+    "Canal_ID": 9,
+    "Ruta_SAK": 3603,
+    "Cliente_ID": 880604,
+    "Producto_ID": 1799,
+    "Venta_uni_hoy": 2116,
+    "Venta_hoy": 78140,
+    "Dev_uni_proxima": 558,
+    "Dev_proxima": 14707,
+    "Demanda_uni_equil": 2091
+  },
+  "duplicate_keys": {
+    "keys": 1473284,
+    "rows": 1473284,
+    "keys_with_dupes": 0,
+    "max_rows_per_key": 1,
+    "sample": "pmod(Cliente_ID, 50) = 0"
+  },
+  "descriptive": {
+    "Venta_uni_hoy": {
+      "count": 74180464,
+      "mean": 7.310163468376256,
+      "std": 21.96733684000196,
+      "var": 482.56388784210725,
+      "min": 0,
+      "max": 7200,
+      "skew": 43.03406768012846,
+      "kurt": 4847.74938214333
+    },
+    "Venta_hoy": {
+      "count": 74180464,
+      "mean": 68.54452258499148,
+      "std": 338.97951585218095,
+      "var": 114907.11216737899,
+      "min": 0.0,
+      "max": 647360.0,
+      "skew": 269.0187963662643,
+      "kurt": 312239.0216903107
+    },
+    "Dev_uni_proxima": {
+      "count": 74180464,
+      "mean": 0.1302576646056029,
+      "std": 29.323204167611543,
+      "var": 859.8503026554309,
+      "min": 0,
+      "max": 250000,
+      "skew": 8358.927075925889,
+      "kurt": 71225693.72932062
+    },
+    "Dev_proxima": {
+      "count": 74180464,
+      "mean": 1.2432480515353077,
+      "std": 39.215522581494575,
+      "var": 1537.857211339711,
+      "min": 0.0,
+      "max": 130760.0,
+      "skew": 1408.6058076242055,
+      "kurt": 3397370.000651185
+    },
+    "Demanda_uni_equil": {
+      "count": 74180464,
+      "mean": 7.2245640038056385,
+      "std": 21.77119294903041,
+      "var": 473.98484242391146,
+      "min": 0,
+      "max": 5000,
+      "skew": 43.037750214991846,
+      "kurt": 4789.809768172102
+    },
+    "unit_price": {
+      "count": 73877905,
+      "mean": 10.091180783021214,
+      "std": 6.284193464194221,
+      "var": 39.49108749542136,
+      "min": 0.01,
+      "max": 6412.33,
+      "skew": 92.12170943606735,
+      "kurt": 87760.42422817268
+    },
+    "return_rate": {
+      "count": 73877905,
+      "mean": 0.027584809388129183,
+      "std": 0.5048543289126101,
+      "var": 0.25487789342180184,
+      "min": 0.0,
+      "max": 1504.0,
+      "skew": 1108.8810247673453,
+      "kurt": 2539069.6172576267
+    }
+  },
+  "quantiles_Demanda_uni_equil": {
+    "0.01": 0.0,
+    "0.05": 1.0,
+    "0.25": 2.0,
+    "0.5": 3.0,
+    "0.75": 6.0,
+    "0.9": 14.0,
+    "0.95": 24.0,
+    "0.99": 64.0,
+    "0.999": 251.0
+  },
+  "zero_pct_Demanda_uni_equil": 1.8021200298774083,
+  "quantiles_Venta_uni_hoy": {
+    "0.01": 1.0,
+    "0.05": 1.0,
+    "0.25": 2.0,
+    "0.5": 3.0,
+    "0.75": 7.0,
+    "0.9": 14.0,
+    "0.95": 24.0,
+    "0.99": 65.0,
+    "0.999": 253.0
+  },
+  "zero_pct_Venta_uni_hoy": 0.40786884266455925,
+  "quantiles_Dev_uni_proxima": {
+    "0.01": 0.0,
+    "0.05": 0.0,
+    "0.25": 0.0,
+    "0.5": 0.0,
+    "0.75": 0.0,
+    "0.9": 0.0,
+    "0.95": 0.0,
+    "0.99": 3.0,
+    "0.999": 17.0
+  },
+  "zero_pct_Dev_uni_proxima": 96.56990417315265,
+  "hist_bins_pct": {
+    "0": 1.802,
+    "1": 17.862,
+    "2": 20.218,
+    "3": 12.335,
+    "4": 9.674,
+    "5": 7.595,
+    "6-10": 16.792,
+    "11-25": 9.356,
+    "26-50": 3.006,
+    "51-100": 0.895,
+    "101-250": 0.365,
+    "251-1k": 0.096,
+    "1k-5k": 0.004
+  },
+  "median_by_channel": {
+    "1": 3.0,
+    "4": 7.0,
+    "11": 5.0,
+    "2": 30.0,
+    "7": 5.0,
+    "6": 6.0,
+    "5": 103.0,
+    "8": 10.0,
+    "9": 39.0
+  },
+  "top_states_pct": {
+    "ESTADO DE MEXICO": 13.65,
+    "MEXICO, D.F.": 12.65,
+    "JALISCO": 8.45,
+    "NUEVO LEON": 5.63,
+    "VERACRUZ": 5.11
+  },
+  "top4_states_pct": 40.38139826343543,
+  "brand_pct": {
+    "BIM": 59.82,
+    "MLA": 19.05,
+    "TR": 8.66,
+    "WON": 2.85,
+    "DH": 1.88,
+    "LAR": 1.31
+  },
+  "concentration_clients": {
+    "gini": 0.7531136593982122,
+    "n": 880604,
+    "top_1pct": 0.331924665929407,
+    "top_10pct": 0.6411258034682287,
+    "top_20pct": 0.7779273526372473
+  },
+  "concentration_products": {
+    "gini": 0.8826368048491279,
+    "n": 1799,
+    "top_1pct": 0.30790015580629154,
+    "top_10pct": 0.8117314452343588,
+    "top_20pct": 0.9298955685327848
+  },
+  "active_weeks": {
+    "1": 32424,
+    "2": 34195,
+    "3": 40075,
+    "4": 44934,
+    "5": 67039,
+    "6": 81610,
+    "7": 580327
+  },
+  "pearson": {
+    "Venta_uni_hoy": {
+      "Venta_uni_hoy": 1.0,
+      "Venta_hoy": 0.734,
+      "Dev_uni_proxima": 0.009,
+      "Dev_proxima": 0.062,
+      "Demanda_uni_equil": 0.997
+    },
+    "Venta_hoy": {
+      "Venta_uni_hoy": 0.734,
+      "Venta_hoy": 1.0,
+      "Dev_uni_proxima": 0.005,
+      "Dev_proxima": 0.057,
+      "Demanda_uni_equil": 0.733
+    },
+    "Dev_uni_proxima": {
+      "Venta_uni_hoy": 0.009,
+      "Venta_hoy": 0.005,
+      "Dev_uni_proxima": 1.0,
+      "Dev_proxima": 0.129,
+      "Demanda_uni_equil": 0.004
+    },
+    "Dev_proxima": {
+      "Venta_uni_hoy": 0.062,
+      "Venta_hoy": 0.057,
+      "Dev_uni_proxima": 0.129,
+      "Dev_proxima": 1.0,
+      "Demanda_uni_equil": 0.035
+    },
+    "Demanda_uni_equil": {
+      "Venta_uni_hoy": 0.997,
+      "Venta_hoy": 0.733,
+      "Dev_uni_proxima": 0.004,
+      "Dev_proxima": 0.035,
+      "Demanda_uni_equil": 1.0
+    }
+  },
+  "spearman_sample": {
+    "Venta_uni_hoy": {
+      "Venta_uni_hoy": 1.0,
+      "Venta_hoy": 0.849,
+      "Dev_uni_proxima": -0.068,
+      "Dev_proxima": -0.068,
+      "Demanda_uni_equil": 0.987
+    },
+    "Venta_hoy": {
+      "Venta_uni_hoy": 0.849,
+      "Venta_hoy": 1.0,
+      "Dev_uni_proxima": -0.049,
+      "Dev_proxima": -0.049,
+      "Demanda_uni_equil": 0.838
+    },
+    "Dev_uni_proxima": {
+      "Venta_uni_hoy": -0.068,
+      "Venta_hoy": -0.049,
+      "Dev_uni_proxima": 1.0,
+      "Dev_proxima": 1.0,
+      "Demanda_uni_equil": -0.175
+    },
+    "Dev_proxima": {
+      "Venta_uni_hoy": -0.068,
+      "Venta_hoy": -0.049,
+      "Dev_uni_proxima": 1.0,
+      "Dev_proxima": 1.0,
+      "Demanda_uni_equil": -0.176
+    },
+    "Demanda_uni_equil": {
+      "Venta_uni_hoy": 0.987,
+      "Venta_hoy": 0.838,
+      "Dev_uni_proxima": -0.175,
+      "Dev_proxima": -0.176,
+      "Demanda_uni_equil": 1.0
+    }
+  },
+  "row_sample_rows": 371696,
+  "sample_rows_with_returns": 12827,
+  "sample_returns_gt_sales_pct": 24.074218445466595,
+  "single_row": {
+    "Semana": 9,
+    "Agencia_ID": 1255,
+    "Canal_ID": 5,
+    "Ruta_SAK": 3001,
+    "Cliente_ID": 653378,
+    "Producto_ID": 3509,
+    "State": "MEXICO, D.F.",
+    "product_name": "Paletina para Cafe NES 3509",
+    "brand": "NES",
+    "Venta_uni_hoy": 0,
+    "Venta_hoy": 0.0,
+    "Dev_uni_proxima": 250000,
+    "Dev_proxima": 2500.0,
+    "Demanda_uni_equil": 0
+  },
+  "weekly": {
+    "demand_m": {
+      "3": 77.66,
+      "4": 79.62,
+      "5": 77.61,
+      "6": 73.85,
+      "7": 76.6,
+      "8": 75.53,
+      "9": 75.05
+    },
+    "return_units": {
+      "3": 1286055,
+      "4": 1322852,
+      "5": 1220967,
+      "6": 1321510,
+      "7": 1417450,
+      "8": 1452369,
+      "9": 1641371
+    },
+    "return_units_without_row": {
+      "3": 1286055,
+      "4": 1322852,
+      "5": 1220967,
+      "6": 1321510,
+      "7": 1417450,
+      "8": 1452369,
+      "9": 1391371
+    },
+    "return_pct_units": {
+      "3": 1.638,
+      "4": 1.643,
+      "5": 1.556,
+      "6": 1.768,
+      "7": 1.828,
+      "8": 1.899,
+      "9": 2.16
+    },
+    "return_pct_units_without_row": {
+      "3": 1.638,
+      "4": 1.643,
+      "5": 1.556,
+      "6": 1.768,
+      "7": 1.828,
+      "8": 1.899,
+      "9": 1.831
+    },
+    "return_pct_value": {
+      "3": 1.709,
+      "4": 1.77,
+      "5": 1.695,
+      "6": 1.837,
+      "7": 1.898,
+      "8": 1.946,
+      "9": 1.852
+    },
+    "return_units_change_w3_w9_pct": 27.628367371535422,
+    "return_units_change_without_row_pct": 8.189074339744407,
+    "return_pesos_change_w3_w9_pct": 3.6181422643169148
+  },
+  "overall_return_pct_units": 1.781870749800564,
+  "overall_return_pct_units_without_row": 1.7357683667864579,
+  "overall_return_pct_value": 1.8137817649471495,
+  "lag": {
+    "rows": 1473284,
+    "by_lag": [
+      {
+        "lag": 1,
+        "pairs": 841126,
+        "corr_log1p": 0.7867327347954959
+      },
+      {
+        "lag": 2,
+        "pairs": 523587,
+        "corr_log1p": 0.7893259104650495
+      },
+      {
+        "lag": 3,
+        "pairs": 402061,
+        "corr_log1p": 0.7879372512945555
+      },
+      {
+        "lag": 4,
+        "pairs": 292501,
+        "corr_log1p": 0.7878806927086676
+      },
+      {
+        "lag": 5,
+        "pairs": 189944,
+        "corr_log1p": 0.7848061134076028
+      },
+      {
+        "lag": 6,
+        "pairs": 92694,
+        "corr_log1p": 0.7825717614810334
+      }
+    ],
+    "series": 524605,
+    "series_one_week_pct": 36.424357373643026,
+    "series_all_weeks_pct": 9.441579855319716,
+    "series_by_weeks": {
+      "1": 191084,
+      "2": 103505,
+      "3": 72911,
+      "4": 44434,
+      "5": 46836,
+      "6": 16304,
+      "7": 49531
+    }
+  },
+  "outliers": {
+    "q1": 2.0,
+    "q3": 6.0,
+    "iqr_fence": 12.0,
+    "iqr_rows_pct": 11.235632066146149,
+    "iqr_units_pct": 54.211488730877775,
+    "pipeline_threshold": 249,
+    "exact_p999": 251.0,
+    "p999_rows_pct": 0.10140540506729642,
+    "p999_units_pct": 6.2501393161099275,
+    "by_channel_pct": {
+      "1": 0.012,
+      "2": 4.214,
+      "4": 0.039,
+      "5": 13.191,
+      "6": 0.119,
+      "7": 0.574,
+      "8": 2.689,
+      "9": 11.905,
+      "11": 0.502
+    },
+    "by_channel_share_of_flagged_pct": {
+      "1": 10.9,
+      "2": 47.0,
+      "4": 2.0,
+      "5": 25.6,
+      "6": 0.4,
+      "7": 5.1,
+      "8": 2.4,
+      "9": 0.1,
+      "11": 6.6
+    }
+  },
+  "pca": {
+    "clients": 88191,
+    "explained_pct": [
+      60.15,
+      13.78,
+      12.52,
+      6.79,
+      4.52,
+      1.97,
+      0.19,
+      0.08
+    ],
+    "pc1_loadings": {
+      "log_dòng": 0.447,
+      "log_sản_phẩm": 0.428,
+      "log_tuyến": 0.334,
+      "tuần_hoạt_động": 0.37,
+      "log_đơn_vị_bán": 0.431,
+      "log_doanh_thu": 0.423,
+      "log_giá_tb": 0.022,
+      "log_tỷ_lệ_trả": -0.059
+    },
+    "pc2_loadings": {
+      "log_dòng": -0.043,
+      "log_sản_phẩm": -0.17,
+      "log_tuyến": -0.22,
+      "tuần_hoạt_động": 0.048,
+      "log_đơn_vị_bán": 0.003,
+      "log_doanh_thu": 0.256,
+      "log_giá_tb": 0.87,
+      "log_tỷ_lệ_trả": -0.311
+    }
+  },
+  "kmeans_silhouette": {
+    "2": {
+      "mean": 0.4059326529239639,
+      "min": 0.39942441380220883,
+      "max": 0.4139805255635601
+    },
+    "3": {
+      "mean": 0.3078019500309753,
+      "min": 0.3028525945935231,
+      "max": 0.31316333184644474
+    },
+    "4": {
+      "mean": 0.3155155581919725,
+      "min": 0.3077381610221559,
+      "max": 0.32863216504778925
+    },
+    "5": {
+      "mean": 0.328431943692178,
+      "min": 0.32221794564916273,
+      "max": 0.3343423464735193
+    },
+    "6": {
+      "mean": 0.28305551699197257,
+      "min": 0.2682040907111279,
+      "max": 0.3231286222945652
+    },
+    "7": {
+      "mean": 0.2397139976493305,
+      "min": 0.2305877284353207,
+      "max": 0.27026057307295814
+    },
+    "8": {
+      "mean": 0.23242386735847279,
+      "min": 0.2286456471540854,
+      "max": 0.23675795867445243
+    }
+  },
+  "segment_silhouette_q4_rules": {
+    "mean": 0.016267381049757258,
+    "min": 0.013290369744036941,
+    "max": 0.01971727647958444
+  },
+  "test_vs_train": {
+    "rows": 6999251,
+    "rows_new_client": 30054,
+    "rows_new_product": 25640,
+    "clients": 745164,
+    "products": 1522,
+    "pair_sample": {
+      "rows": 139088,
+      "rows_new_pair": 27318
+    },
+    "by_channel": {
+      "1": 6344202,
+      "6": 28023,
+      "9": 37,
+      "11": 103951,
+      "7": 60548,
+      "8": 6333,
+      "5": 13567,
+      "2": 78382,
+      "4": 364208
+    },
+    "by_week": {
+      "10": 3538385,
+      "11": 3460866
+    }
+  },
+  "cold_start_pct": {
+    "new_client": 0.42938880174464383,
+    "new_product": 0.36632491105119674,
+    "new_pair_sample": 19.640802944898194
+  },
+  "meta": {
+    "application_id": "app-20261104033847-0002",
+    "row_sample_fraction": 0.005,
+    "client_sample_mod": 10,
+    "series_sample_mod": 50
+  }
+}

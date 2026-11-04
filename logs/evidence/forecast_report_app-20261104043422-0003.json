@@ -1,0 +1,61 @@
+{
+  "valid_rows": 208563,
+  "train_rows": 614132,
+  "new_pair_share_pct": 24.995325153550727,
+  "rmsle": {
+    "product_baseline": 0.6299415366218412,
+    "history_baseline": 0.5289081727841654,
+    "gbt": 0.4746799735879497
+  },
+  "rmsle_known_pair": {
+    "history_baseline": 0.48988315062735643,
+    "gbt": 0.4607972547875024
+  },
+  "rmsle_new_pair": {
+    "history_baseline": 0.6317029847797754,
+    "gbt": 0.5140930800856944
+  },
+  "wape_state_channel_pct": {
+    "gbt_corrected": 7.296323277696576,
+    "gbt_raw": 12.559751583816997,
+    "history_baseline": 5.318332029223074
+  },
+  "correction_factor_by_channel": {
+    "1": 1.1577431149859978,
+    "6": 1.2608033020274338,
+    "11": 1.2302033839312243,
+    "7": 1.2373204777448898,
+    "8": 1.1892238910677546,
+    "5": 1.4789343528435772,
+    "2": 1.1941042442437566,
+    "4": 1.1498204525432338
+  },
+  "feature_importance": {
+    "pair_mean": 0.48200878062868535,
+    "pair_last": 0.020998628938271154,
+    "pair_weeks": 0.015118102420231564,
+    "has_pair": 0.0002764450155563408,
+    "client_mean": 0.09682274703137844,
+    "client_weeks": 0.01424497793520347,
+    "route_product_mean": 0.15767942872406823,
+    "agency_product_mean": 0.0824960178927223,
+    "product_mean": 0.0504724450842074,
+    "product_price": 0.05728393226030248,
+    "channel_mean": 0.0225984940693733
+  },
+  "forecast_by_week": [
+    {
+      "Semana": 10,
+      "listed_rows": 3538385,
+      "gbt_units": 25984563.0,
+      "baseline_units": 24018563.0
+    },
+    {
+      "Semana": 11,
+      "listed_rows": 3460866,
+      "gbt_units": 25369758.0,
+      "baseline_units": 23579633.0
+    }
+  ],
+  "application_id": "app-20261104043422-0003"
+}

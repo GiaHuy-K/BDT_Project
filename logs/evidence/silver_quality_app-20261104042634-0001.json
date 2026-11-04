@@ -1,0 +1,119 @@
+{
+  "application_id": "app-20261104042634-0001",
+  "bronze_train_rows": 74180464,
+  "fact_rows": 74180464,
+  "rejected_rows": 0,
+  "rejected_by_reason": {},
+  "fact_flags": {
+    "is_outlier": 75223,
+    "is_outlier_channel": 76379,
+    "is_zero_demand": 1336821,
+    "returns_exceed_sales": 615828,
+    "demand_mismatch": 0,
+    "is_unknown_client": 13259253,
+    "net_revenue_total": 4992439772.68
+  },
+  "outlier_threshold_demand": 249.0,
+  "outliers_by_channel": [
+    {
+      "Canal_ID": 1,
+      "threshold": 111,
+      "rows": 67435217,
+      "flagged_global": 8170,
+      "flagged_channel": 69671,
+      "only_channel": 61501
+    },
+    {
+      "Canal_ID": 2,
+      "threshold": 864,
+      "rows": 839496,
+      "flagged_global": 35375,
+      "flagged_channel": 854,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 4,
+      "threshold": 156,
+      "rows": 3757773,
+      "flagged_global": 1475,
+      "flagged_channel": 3600,
+      "only_channel": 2125
+    },
+    {
+      "Canal_ID": 5,
+      "threshold": 1489,
+      "rows": 145818,
+      "flagged_global": 19235,
+      "flagged_channel": 158,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 6,
+      "threshold": 259,
+      "rows": 281389,
+      "flagged_global": 335,
+      "flagged_channel": 299,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 7,
+      "threshold": 700,
+      "rows": 671128,
+      "flagged_global": 3853,
+      "flagged_channel": 693,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 8,
+      "threshold": 3350,
+      "rows": 66970,
+      "flagged_global": 1801,
+      "flagged_channel": 71,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 9,
+      "threshold": 530,
+      "rows": 378,
+      "flagged_global": 45,
+      "flagged_channel": 0,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 11,
+      "threshold": 754,
+      "rows": 982295,
+      "flagged_global": 4934,
+      "flagged_channel": 1033,
+      "only_channel": 0
+    }
+  ],
+  "fact_rows_by_week": {
+    "3": 11165207,
+    "4": 11009593,
+    "5": 10615397,
+    "6": 10191837,
+    "7": 10382849,
+    "8": 10406868,
+    "9": 10408713
+  },
+  "dim_cliente": {
+    "bronze_rows": 935362,
+    "bronze_distinct_ids": 930500,
+    "silver_rows": 930500,
+    "unknown_clients": 282025
+  },
+  "dim_producto": {
+    "rows": 2592,
+    "with_pieces": 1124,
+    "with_weight": 2528,
+    "with_brand": 2591,
+    "distinct_brands": 45
+  },
+  "dim_agencia": {
+    "rows": 790,
+    "states_before": 33,
+    "states_after": 32
+  },
+  "invariant_ok": true
+}

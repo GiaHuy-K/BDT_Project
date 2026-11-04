@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
-# End-to-end pipeline: infra -> ingestion -> bronze -> silver -> gold -> PostgreSQL.
+# End-to-end pipeline: infra -> ingestion -> bronze -> silver -> gold -> forecast -> PostgreSQL.
 # Usage: ./run.sh            (all steps)
-#        ./run.sh silver     (start from a given step: ingest|bronze|silver|gold|export)
+#        ./run.sh silver     (start from a given step: ingest|bronze|silver|gold|forecast|export)
+#        SKIP_FORECAST=1 ./run.sh gold   (keep the last forecast: it is the slowest step)
 set -euo pipefail
 cd "$(dirname "$0")"
 # Git Bash on Windows would rewrite container paths like /opt/spark into C:/Program Files/Git/opt/spark
 export MSYS_NO_PATHCONV=1
 
 START="${1:-infra}"
-STEPS=(infra ingest bronze silver gold export)
+STEPS=(infra ingest bronze silver gold forecast export)
 mkdir -p logs
 LOG="logs/run_$(date +%Y%m%d_%H%M%S).log"
 exec > >(tee -a "$LOG") 2>&1
@@ -33,6 +34,8 @@ run_step() {
     bronze) submit bronze ;;
     silver) submit silver ;;
     gold)   submit gold ;;
+    forecast)
+      if [ -n "${SKIP_FORECAST:-}" ]; then echo "== SKIP_FORECAST set, keeping the last forecast"; else submit forecast; fi ;;
     export) submit export_postgres ;;
   esac
 }

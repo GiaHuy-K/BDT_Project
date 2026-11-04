@@ -3,7 +3,7 @@
 BDT301 Group Project: pipeline batch end-to-end phân tích nhu cầu và hàng trả lại trong chuỗi phân phối bánh Grupo Bimbo (74.2 triệu dòng, ~3.5 GB).
 
 ```
-Kaggle ─► ingest.py ─► MinIO raw/ ─► Spark bronze ─► silver ─► gold ─► PostgreSQL ─► Metabase
+Kaggle ─► ingest.py ─► MinIO raw/ ─► Spark bronze ─► silver ─► gold ─► forecast ─► PostgreSQL ─► Metabase
 ```
 
 ## Câu hỏi business
@@ -39,7 +39,8 @@ BDT_Project/
 │   ├── init/                 # tạo DB metabase + schema gold
 │   └── analysis/             # query trả lời Q1–Q4
 ├── dashboard/                # hướng dẫn dựng dashboard Metabase
-├── notebooks/                # EDA, thử nghiệm
+├── notebooks/                # biểu đồ và số liệu EDA, dự báo
+├── docker/spark/             # image Spark có thêm numpy cho MLlib
 ├── logs/
 │   ├── spark-events/         # Spark event log (xem ở History Server)
 │   └── evidence/             # log chạy cuối cùng được commit làm bằng chứng
@@ -75,10 +76,16 @@ pip install -r requirements.txt
 ./run.sh
 ```
 
-`run.sh` chạy lần lượt: `infra` → `ingest` → `bronze` → `silver` → `gold` → `export`. Muốn chạy lại từ một bước thì truyền tên bước đó, ví dụ:
+`run.sh` chạy lần lượt: `infra` → `ingest` → `bronze` → `silver` → `gold` → `forecast` → `export`. Lần chạy đầu Docker tự build image Spark có thêm `numpy` (`docker/spark/Dockerfile`), vì MLlib cần thư viện này. Muốn chạy lại từ một bước thì truyền tên bước đó, ví dụ:
 
 ```bash
 ./run.sh silver
+```
+
+Bước `forecast` lâu nhất. Khi chỉ cần chạy lại gold và export, có thể bỏ qua bước đó và giữ dự báo gần nhất:
+
+```bash
+SKIP_FORECAST=1 ./run.sh gold
 ```
 
 ## Kết quả mong đợi
@@ -95,13 +102,34 @@ pip install -r requirements.txt
 - Bảng `gold.*` trong PostgreSQL; query mẫu nằm ở `sql/analysis/`.
 - Biểu đồ của báo cáo vẽ lại từ PostgreSQL bằng `python docs/report/make_figures.py`.
 
+## Dự báo và ngưỡng outlier theo kênh
+
+Hai phần này được thêm vào pipeline sau khi EDA cho thấy lý do cần có chúng:
+
+- **`is_outlier_channel`** (silver, bảng `gold.outliers_by_channel`): mỗi kênh dùng phân vị 99.9% của chính nó. Cột `is_outlier` cũ giữ nguyên.
+- **`spark_jobs/forecast.py`** (bảng `gold.forecast_metrics`, `gold.forecast_demand_by_state_channel`): GBT của Spark MLlib, học trên tuần 6–8, kiểm tra trên tuần 9 với khách chưa dùng để học. RMSLE 0.475 so với 0.529 của baseline, tức giảm 10.3%. Khi cộng lên bang × kênh thì baseline chính xác hơn (sai 5.3% so với 7.3%), nên bảng kết quả lưu cả hai. `test.csv` chỉ có khoảng 1/3 số dòng của một tuần, nên tổng dự báo không phải nhu cầu toàn quốc.
+
+Query: `sql/analysis/q5_forecast.sql`, `sql/analysis/outliers_by_channel.sql`. Biểu đồ: `python notebooks/forecast_figures.py`.
+
+## EDA (tùy chọn, chạy sau `./run.sh`)
+
+Job chỉ đọc dữ liệu và không nằm trong `run.sh`, nên không làm thay đổi pipeline. Kết quả, giải thích từng biểu đồ: [`docs/eda/EDA_report.md`](docs/eda/EDA_report.md).
+
+```bash
+docker compose exec -T spark-master /opt/spark/bin/spark-submit /opt/pipeline/spark_jobs/eda.py
+```
+
+```bash
+python notebooks/eda_report.py
+```
+
 Nếu máy đã cài sẵn PostgreSQL chiếm cổng 5432, đổi `POSTGRES_PORT` trong `.env` (ví dụ 5433) rồi `docker compose up -d postgres`. Spark, Metabase và script vẽ biểu đồ kết nối trong mạng Docker nên không bị ảnh hưởng.
 
 ## Trạng thái
 
 - [x] Hạ tầng Docker Compose, ingestion, bronze, export
 - [x] Silver: làm sạch, dedup, tách tên sản phẩm, bảng `rejected`, kiểm tra bất biến
-- [x] Gold: 4 bảng Q1–Q4 (lần chạy bằng chứng: `logs/evidence/run_20261029_205823.log`)
+- [x] Gold: 4 bảng Q1–Q4, outlier theo kênh, dự báo (lần chạy bằng chứng: `logs/evidence/run_20261104_112206.log`)
 - [x] Báo cáo (`docs/report/`), dàn ý slide (`docs/slides/`)
 - [x] Dashboard Metabase Q1–Q4 (SQL: `dashboard/cards.sql`, ảnh: `docs/report/dashboard.png`)
 - [x] Bảng phân công 3 thành viên (`docs/contribution.md`)

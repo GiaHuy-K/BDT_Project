@@ -1,0 +1,601 @@
+== pipeline run 2026-11-04T11:22:06+07:00, log: logs/run_20261104_112206.log
+== step: infra
+ Container bimbo-pipeline-postgres-1 Running 
+ Container bimbo-pipeline-minio-1 Running 
+ Container bimbo-pipeline-spark-history-1 Recreate 
+ Container bimbo-pipeline-spark-master-1 Recreate 
+ Container bimbo-pipeline-spark-master-1 Recreated 
+ Container bimbo-pipeline-spark-worker-1-1 Recreate 
+ Container bimbo-pipeline-spark-worker-2-1 Recreate 
+ Container bimbo-pipeline-spark-history-1 Recreated 
+ Container bimbo-pipeline-spark-worker-2-1 Recreated 
+ Container bimbo-pipeline-spark-worker-1-1 Recreated 
+ Container bimbo-pipeline-spark-history-1 Starting 
+ Container bimbo-pipeline-postgres-1 Waiting 
+ Container bimbo-pipeline-spark-master-1 Starting 
+ Container bimbo-pipeline-postgres-1 Healthy 
+ Container bimbo-pipeline-metabase-1 Starting 
+ Container bimbo-pipeline-spark-history-1 Started 
+ Container bimbo-pipeline-spark-master-1 Started 
+ Container bimbo-pipeline-spark-worker-2-1 Starting 
+ Container bimbo-pipeline-spark-worker-1-1 Starting 
+ Container bimbo-pipeline-metabase-1 Started 
+ Container bimbo-pipeline-spark-worker-1-1 Started 
+ Container bimbo-pipeline-spark-worker-2-1 Started 
+== waiting for MinIO and PostgreSQL
+== step: ingest
+[ingest] skip grupo_bimbo/cliente_tabla/cliente_tabla.csv (unchanged)
+[ingest] skip grupo_bimbo/producto_tabla/producto_tabla.csv (unchanged)
+[ingest] skip grupo_bimbo/test/test.csv (unchanged)
+[ingest] skip grupo_bimbo/town_state/town_state.csv (unchanged)
+[ingest] skip grupo_bimbo/train/train.csv (unchanged)
+[ingest] done: 5 files, manifest ingest_20261104T042220Z.json
+== step: bronze
+== spark-submit bronze
+:: loading settings :: url = jar:file:/opt/spark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /tmp/.ivy2/cache
+The jars for the packages stored in: /tmp/.ivy2/jars
+org.apache.hadoop#hadoop-aws added as a dependency
+com.amazonaws#aws-java-sdk-bundle added as a dependency
+org.postgresql#postgresql added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-3ed08568-68f2-4e4f-a496-c31bf0c4d65e;1.0
+	confs: [default]
+	found org.apache.hadoop#hadoop-aws;3.3.4 in central
+	found com.amazonaws#aws-java-sdk-bundle;1.12.262 in central
+	found org.wildfly.openssl#wildfly-openssl;1.0.7.Final in central
+	found org.postgresql#postgresql;42.7.4 in central
+	found org.checkerframework#checker-qual;3.42.0 in central
+downloading https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar ...
+	[SUCCESSFUL ] org.apache.hadoop#hadoop-aws;3.3.4!hadoop-aws.jar (478ms)
+downloading https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.262/aws-java-sdk-bundle-1.12.262.jar ...
+	[SUCCESSFUL ] com.amazonaws#aws-java-sdk-bundle;1.12.262!aws-java-sdk-bundle.jar (27247ms)
+downloading https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.4/postgresql-42.7.4.jar ...
+	[SUCCESSFUL ] org.postgresql#postgresql;42.7.4!postgresql.jar (180ms)
+downloading https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl/1.0.7.Final/wildfly-openssl-1.0.7.Final.jar ...
+	[SUCCESSFUL ] org.wildfly.openssl#wildfly-openssl;1.0.7.Final!wildfly-openssl.jar (1744ms)
+downloading https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar ...
+	[SUCCESSFUL ] org.checkerframework#checker-qual;3.42.0!checker-qual.jar (140ms)
+:: resolution report :: resolve 5685ms :: artifacts dl 29799ms
+	:: modules in use:
+	com.amazonaws#aws-java-sdk-bundle;1.12.262 from central in [default]
+	org.apache.hadoop#hadoop-aws;3.3.4 from central in [default]
+	org.checkerframework#checker-qual;3.42.0 from central in [default]
+	org.postgresql#postgresql;42.7.4 from central in [default]
+	org.wildfly.openssl#wildfly-openssl;1.0.7.Final from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   5   |   5   |   5   |   0   ||   5   |   5   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-3ed08568-68f2-4e4f-a496-c31bf0c4d65e
+	confs: [default]
+	5 artifacts copied, 0 already retrieved (276708kB/573ms)
+[bimbo-bronze] applicationId=app-20261104042345-0000
+[bronze] train: 74,180,464 rows
+[bronze] test: 6,999,251 rows
+[bronze] cliente_tabla: 935,362 rows
+[bronze] producto_tabla: 2,592 rows
+[bronze] town_state: 790 rows
+== step: silver
+== spark-submit silver
+:: loading settings :: url = jar:file:/opt/spark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /tmp/.ivy2/cache
+The jars for the packages stored in: /tmp/.ivy2/jars
+org.apache.hadoop#hadoop-aws added as a dependency
+com.amazonaws#aws-java-sdk-bundle added as a dependency
+org.postgresql#postgresql added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-43c94b87-1913-4a7d-a7ab-1433917abf2e;1.0
+	confs: [default]
+	found org.apache.hadoop#hadoop-aws;3.3.4 in central
+	found com.amazonaws#aws-java-sdk-bundle;1.12.262 in central
+	found org.wildfly.openssl#wildfly-openssl;1.0.7.Final in central
+	found org.postgresql#postgresql;42.7.4 in central
+	found org.checkerframework#checker-qual;3.42.0 in central
+:: resolution report :: resolve 449ms :: artifacts dl 18ms
+	:: modules in use:
+	com.amazonaws#aws-java-sdk-bundle;1.12.262 from central in [default]
+	org.apache.hadoop#hadoop-aws;3.3.4 from central in [default]
+	org.checkerframework#checker-qual;3.42.0 from central in [default]
+	org.postgresql#postgresql;42.7.4 from central in [default]
+	org.wildfly.openssl#wildfly-openssl;1.0.7.Final from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   5   |   0   |   0   |   0   ||   5   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-43c94b87-1913-4a7d-a7ab-1433917abf2e
+	confs: [default]
+	0 artifacts copied, 5 already retrieved (0kB/15ms)
+[bimbo-silver] applicationId=app-20261104042634-0001
+[silver] dim_cliente: written, Cliente_ID unique
+[silver] dim_producto: written, Producto_ID unique
+[silver] dim_agencia: written, Agencia_ID unique
+[silver] quality report:
+{
+  "application_id": "app-20261104042634-0001",
+  "bronze_train_rows": 74180464,
+  "fact_rows": 74180464,
+  "rejected_rows": 0,
+  "rejected_by_reason": {},
+  "fact_flags": {
+    "is_outlier": 75223,
+    "is_outlier_channel": 76379,
+    "is_zero_demand": 1336821,
+    "returns_exceed_sales": 615828,
+    "demand_mismatch": 0,
+    "is_unknown_client": 13259253,
+    "net_revenue_total": 4992439772.68
+  },
+  "outlier_threshold_demand": 249.0,
+  "outliers_by_channel": [
+    {
+      "Canal_ID": 1,
+      "threshold": 111,
+      "rows": 67435217,
+      "flagged_global": 8170,
+      "flagged_channel": 69671,
+      "only_channel": 61501
+    },
+    {
+      "Canal_ID": 2,
+      "threshold": 864,
+      "rows": 839496,
+      "flagged_global": 35375,
+      "flagged_channel": 854,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 4,
+      "threshold": 156,
+      "rows": 3757773,
+      "flagged_global": 1475,
+      "flagged_channel": 3600,
+      "only_channel": 2125
+    },
+    {
+      "Canal_ID": 5,
+      "threshold": 1489,
+      "rows": 145818,
+      "flagged_global": 19235,
+      "flagged_channel": 158,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 6,
+      "threshold": 259,
+      "rows": 281389,
+      "flagged_global": 335,
+      "flagged_channel": 299,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 7,
+      "threshold": 700,
+      "rows": 671128,
+      "flagged_global": 3853,
+      "flagged_channel": 693,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 8,
+      "threshold": 3350,
+      "rows": 66970,
+      "flagged_global": 1801,
+      "flagged_channel": 71,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 9,
+      "threshold": 530,
+      "rows": 378,
+      "flagged_global": 45,
+      "flagged_channel": 0,
+      "only_channel": 0
+    },
+    {
+      "Canal_ID": 11,
+      "threshold": 754,
+      "rows": 982295,
+      "flagged_global": 4934,
+      "flagged_channel": 1033,
+      "only_channel": 0
+    }
+  ],
+  "fact_rows_by_week": {
+    "3": 11165207,
+    "4": 11009593,
+    "5": 10615397,
+    "6": 10191837,
+    "7": 10382849,
+    "8": 10406868,
+    "9": 10408713
+  },
+  "dim_cliente": {
+    "bronze_rows": 935362,
+    "bronze_distinct_ids": 930500,
+    "silver_rows": 930500,
+    "unknown_clients": 282025
+  },
+  "dim_producto": {
+    "rows": 2592,
+    "with_pieces": 1124,
+    "with_weight": 2528,
+    "with_brand": 2591,
+    "distinct_brands": 45
+  },
+  "dim_agencia": {
+    "rows": 790,
+    "states_before": 33,
+    "states_after": 32
+  },
+  "invariant_ok": true
+}
+[silver] report written to /opt/pipeline/logs/silver_quality_app-20261104042634-0001.json
+== step: gold
+== spark-submit gold
+:: loading settings :: url = jar:file:/opt/spark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /tmp/.ivy2/cache
+The jars for the packages stored in: /tmp/.ivy2/jars
+org.apache.hadoop#hadoop-aws added as a dependency
+com.amazonaws#aws-java-sdk-bundle added as a dependency
+org.postgresql#postgresql added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-8b69b9df-696d-4520-bfac-f618169561a5;1.0
+	confs: [default]
+	found org.apache.hadoop#hadoop-aws;3.3.4 in central
+	found com.amazonaws#aws-java-sdk-bundle;1.12.262 in central
+	found org.wildfly.openssl#wildfly-openssl;1.0.7.Final in central
+	found org.postgresql#postgresql;42.7.4 in central
+	found org.checkerframework#checker-qual;3.42.0 in central
+:: resolution report :: resolve 402ms :: artifacts dl 29ms
+	:: modules in use:
+	com.amazonaws#aws-java-sdk-bundle;1.12.262 from central in [default]
+	org.apache.hadoop#hadoop-aws;3.3.4 from central in [default]
+	org.checkerframework#checker-qual;3.42.0 from central in [default]
+	org.postgresql#postgresql;42.7.4 from central in [default]
+	org.wildfly.openssl#wildfly-openssl;1.0.7.Final from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   5   |   0   |   0   |   0   ||   5   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-8b69b9df-696d-4520-bfac-f618169561a5
+	confs: [default]
+	0 artifacts copied, 5 already retrieved (0kB/13ms)
+[bimbo-gold] applicationId=app-20261104043142-0002
+[gold] weekly_demand_by_state_channel: 1,393 rows
+[gold] return_rate_by_product_agency_route: 1,062,353 rows
+[gold] product_ranking_by_state: 17,604 rows
+[gold] client_segments: 880,604 rows
+[gold] outliers_by_channel: 9 rows
+== step: forecast
+== spark-submit forecast
+:: loading settings :: url = jar:file:/opt/spark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /tmp/.ivy2/cache
+The jars for the packages stored in: /tmp/.ivy2/jars
+org.apache.hadoop#hadoop-aws added as a dependency
+com.amazonaws#aws-java-sdk-bundle added as a dependency
+org.postgresql#postgresql added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-5fb97471-1198-4b27-b5f6-faeb2d8161bc;1.0
+	confs: [default]
+	found org.apache.hadoop#hadoop-aws;3.3.4 in central
+	found com.amazonaws#aws-java-sdk-bundle;1.12.262 in central
+	found org.wildfly.openssl#wildfly-openssl;1.0.7.Final in central
+	found org.postgresql#postgresql;42.7.4 in central
+	found org.checkerframework#checker-qual;3.42.0 in central
+:: resolution report :: resolve 313ms :: artifacts dl 13ms
+	:: modules in use:
+	com.amazonaws#aws-java-sdk-bundle;1.12.262 from central in [default]
+	org.apache.hadoop#hadoop-aws;3.3.4 from central in [default]
+	org.checkerframework#checker-qual;3.42.0 from central in [default]
+	org.postgresql#postgresql;42.7.4 from central in [default]
+	org.wildfly.openssl#wildfly-openssl;1.0.7.Final from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   5   |   0   |   0   |   0   ||   5   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-5fb97471-1198-4b27-b5f6-faeb2d8161bc
+	confs: [default]
+	0 artifacts copied, 5 already retrieved (0kB/7ms)
+[bimbo-forecast] applicationId=app-20261104043422-0003
++- *(1) Filter (isnotnull(Cliente_ID#3L) AND (pmod(Cliente_ID#3L, 10) = 0))
+   +- *(1) ColumnarToRow
+      +- FileScan parquet [Canal_ID#0,Agencia_ID#1,Producto_ID#2,Cliente_ID#3L,Ruta_SAK#4,Demanda_uni_equil#9,State#19,unit_price#23,Semana#29] Batched: true, DataFilters: [isnotnull(Cliente_ID#3L), (pmod(Cliente_ID#3L, 10) = 0)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[s3a://processed/silver/fact_sales], PartitionFilters: [], PushedFilters: [IsNotNull(Cliente_ID)], ReadSchema: struct<Canal_ID:int,Agencia_ID:int,Producto_ID:int,Cliente_ID:bigint,Ruta_SAK:int,Demanda_uni_equ...
+ MapPartitionsRDD[6] at first at /opt/pipeline/spark_jobs/forecast.py:61), which has no missing parents
++- *(1) Filter (isnotnull(Cliente_ID#3L) AND (pmod(Cliente_ID#3L, 10) = 0))
+   +- *(1) ColumnarToRow
+      +- FileScan parquet [Canal_ID#0,Agencia_ID#1,Producto_ID#2,Cliente_ID#3L,Ruta_SAK#4,Demanda_uni_equil#9,State#19,unit_price#23,Semana#29] Batched: true, DataFilters: [isnotnull(Cliente_ID#3L), (pmod(Cliente_ID#3L, 10) = 0)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[s3a://processed/silver/fact_sales], PartitionFilters: [], PushedFilters: [IsNotNull(Cliente_ID)], ReadSchema: struct<Canal_ID:int,Agencia_ID:int,Producto_ID:int,Cliente_ID:bigint,Ruta_SAK:int,Demanda_uni_equ...
+ MapPartitionsRDD[6] at first at /opt/pipeline/spark_jobs/forecast.py:61) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11))
++- Union
+   :- Project [Canal_ID#0, Producto_ID#2, Agencia_ID#1, Ruta_SAK#4, Cliente_ID#3L, Semana#29, State#19, Demanda_uni_equil#9, unit_price#23, d#70, coalesce(nanvl(pair_mean#142, null), -1.0) AS pair_mean#881, coalesce(nanvl(pair_last#144, null), -1.0) AS pair_last#882, coalesce(pair_weeks#145L, -1) AS pair_weeks#883L, coalesce(nanvl(client_mean#163, null), -1.0) AS client_mean#884, coalesce(client_weeks#164L, -1) AS client_weeks#885L, coalesce(nanvl(route_product_mean#180, null), -1.0) AS route_product_mean#886, coalesce(nanvl(agency_product_mean#195, null), -1.0) AS agency_product_mean#887, coalesce(nanvl(product_mean#210, null), -1.0) AS product_mean#888, coalesce(nanvl(product_price#212, null), -1.0) AS product_price#889, coalesce(nanvl(channel_mean#227, null), -1.0) AS channel_mean#890, cast(isnotnull(pair_mean#142) as double) AS has_pair#789, coalesce(pair_mean#142, agency_product_mean#195, product_mean#210, channel_mean#227, 1.5986804752976755) AS baseline_l... MapPartitionsRDD[235] at count at <unknown>:0), which has no missing parents
++- Union
+   :- Project [Canal_ID#0, Producto_ID#2, Agencia_ID#1, Ruta_SAK#4, Cliente_ID#3L, Semana#29, State#19, Demanda_uni_equil#9, unit_price#23, d#70, coalesce(nanvl(pair_mean#142, null), -1.0) AS pair_mean#881, coalesce(nanvl(pair_last#144, null), -1.0) AS pair_last#882, coalesce(pair_weeks#145L, -1) AS pair_weeks#883L, coalesce(nanvl(client_mean#163, null), -1.0) AS client_mean#884, coalesce(client_weeks#164L, -1) AS client_weeks#885L, coalesce(nanvl(route_product_mean#180, null), -1.0) AS route_product_mean#886, coalesce(nanvl(agency_product_mean#195, null), -1.0) AS agency_product_mean#887, coalesce(nanvl(product_mean#210, null), -1.0) AS product_mean#888, coalesce(nanvl(product_price#212, null), -1.0) AS product_price#889, coalesce(nanvl(channel_mean#227, null), -1.0) AS channel_mean#890, cast(isnotnull(pair_mean#142) as double) AS has_pair#789, coalesce(pair_mean#142, agency_product_mean#195, product_mean#210, channel_mean#227, 1.5986804752976755) AS baseline_l... MapPartitionsRDD[235] at count at <unknown>:0) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14))
++- Project [Canal_ID#0, Producto_ID#2, Agencia_ID#1, Ruta_SAK#4, Cliente_ID#3L, Semana#29, State#19, Demanda_uni_equil#9, unit_price#23, d#70, coalesce(nanvl(pair_mean#6030, null), -1.0) AS pair_mean#6769, coalesce(nanvl(pair_last#6032, null), -1.0) AS pair_last#6770, coalesce(pair_weeks#6033L, -1) AS pair_weeks#6771L, coalesce(nanvl(client_mean#6051, null), -1.0) AS client_mean#6772, coalesce(client_weeks#6052L, -1) AS client_weeks#6773L, coalesce(nanvl(route_product_mean#6068, null), -1.0) AS route_product_mean#6774, coalesce(nanvl(agency_product_mean#6083, null), -1.0) AS agency_product_mean#6775, coalesce(nanvl(product_mean#6098, null), -1.0) AS product_mean#6776, coalesce(nanvl(product_price#6100, null), -1.0) AS product_price#6777, coalesce(nanvl(channel_mean#6115, null), -1.0) AS channel_mean#6778, cast(isnotnull(pair_mean#6030) as double) AS has_pair#6677, coalesce(pair_mean#6030, agency_product_mean#6083, product_mean#6098, channel_mean#6115, 1.6004584131655823)... MapPartitionsRDD[311] at count at <unknown>:0), which has no missing parents
++- Project [Canal_ID#0, Producto_ID#2, Agencia_ID#1, Ruta_SAK#4, Cliente_ID#3L, Semana#29, State#19, Demanda_uni_equil#9, unit_price#23, d#70, coalesce(nanvl(pair_mean#6030, null), -1.0) AS pair_mean#6769, coalesce(nanvl(pair_last#6032, null), -1.0) AS pair_last#6770, coalesce(pair_weeks#6033L, -1) AS pair_weeks#6771L, coalesce(nanvl(client_mean#6051, null), -1.0) AS client_mean#6772, coalesce(client_weeks#6052L, -1) AS client_weeks#6773L, coalesce(nanvl(route_product_mean#6068, null), -1.0) AS route_product_mean#6774, coalesce(nanvl(agency_product_mean#6083, null), -1.0) AS agency_product_mean#6775, coalesce(nanvl(product_mean#6098, null), -1.0) AS product_mean#6776, coalesce(nanvl(product_price#6100, null), -1.0) AS product_price#6777, coalesce(nanvl(channel_mean#6115, null), -1.0) AS channel_mean#6778, cast(isnotnull(pair_mean#6030) as double) AS has_pair#6677, coalesce(pair_mean#6030, agency_product_mean#6083, product_mean#6098, channel_mean#6115, 1.6004584131655823)... MapPartitionsRDD[311] at count at <unknown>:0) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14))
+[forecast] train rows 614,132, validation rows 208,563
+  total: 10.168016043
+  findBestSplits: 10.146535159
+  chooseSplits: 10.134028705
+  total: 7.694964129
+  findBestSplits: 7.692079069
+  chooseSplits: 7.690125426
+  total: 7.152685411
+  findBestSplits: 7.148248578
+  chooseSplits: 7.146661366
+  total: 6.64733846
+  findBestSplits: 6.64606845
+  chooseSplits: 6.645178056
+  total: 7.07938901
+  findBestSplits: 7.077881419
+  chooseSplits: 7.076682709
+  total: 6.700809862
+  findBestSplits: 6.698160811
+  chooseSplits: 6.69631229
+  total: 5.683404589
+  findBestSplits: 5.68140157
+  chooseSplits: 5.680229273
+  total: 6.187823593
+  findBestSplits: 6.18617681
+  chooseSplits: 6.185225777
+  total: 5.132516178
+  findBestSplits: 5.130949244
+  chooseSplits: 5.129899426
+  total: 5.846509355
+  findBestSplits: 5.845348452
+  chooseSplits: 5.844417123
+  total: 10.828085535
+  findBestSplits: 10.826912235
+  chooseSplits: 10.822923923
+  total: 8.406567927
+  findBestSplits: 8.404862959
+  chooseSplits: 8.403143626
+  total: 8.099217851
+  findBestSplits: 8.095897502
+  chooseSplits: 8.094510654
+  total: 5.697937787
+  findBestSplits: 5.696566738
+  chooseSplits: 5.695564866
+  total: 4.404231793
+  findBestSplits: 4.402807873
+  chooseSplits: 4.401968007
+  total: 4.289817451
+  findBestSplits: 4.288883948
+  chooseSplits: 4.288363576
+  total: 3.963077774
+  findBestSplits: 3.961872296
+  chooseSplits: 3.961267786
+  total: 3.996382221
+  findBestSplits: 3.995405442
+  chooseSplits: 3.994871741
+  total: 4.403952204
+  findBestSplits: 4.402654685
+  chooseSplits: 4.401563471
+  total: 4.570782163
+  findBestSplits: 4.568536639
+  chooseSplits: 4.567693688
+  total: 4.104493467
+  findBestSplits: 4.103664452
+  chooseSplits: 4.103231029
+  total: 5.217958954
+  findBestSplits: 5.217042674
+  chooseSplits: 5.216502742
+  total: 5.086180021
+  findBestSplits: 5.084929637
+  chooseSplits: 5.08428608
+  total: 5.595803532
+  findBestSplits: 5.594628954
+  chooseSplits: 5.593959094
+  total: 4.935808715
+  findBestSplits: 4.93461519
+  chooseSplits: 4.934071913
+  total: 4.875465255
+  findBestSplits: 4.874171381
+  chooseSplits: 4.873618371
+  total: 4.879664423
+  findBestSplits: 4.878464121
+  chooseSplits: 4.877870677
+  total: 5.06788439
+  findBestSplits: 5.066536934
+  chooseSplits: 5.065936593
+  total: 4.724686748
+  findBestSplits: 4.723622624
+  chooseSplits: 4.723004223
+  total: 4.716895004
+  findBestSplits: 4.715271343
+  chooseSplits: 4.71422146
+  total: 4.923762013
+  findBestSplits: 4.922795661
+  chooseSplits: 4.922298055
+  total: 4.860920913
+  findBestSplits: 4.85984382
+  chooseSplits: 4.859226432
+  total: 4.93590712
+  findBestSplits: 4.934200686
+  chooseSplits: 4.933094392
+  total: 4.68920297
+  findBestSplits: 4.688044124
+  chooseSplits: 4.687506954
+  total: 5.039056155
+  findBestSplits: 5.037096217
+  chooseSplits: 5.032691403
+  total: 4.946416758
+  findBestSplits: 4.945309878
+  chooseSplits: 4.94476835
+  total: 5.286541518
+  findBestSplits: 5.285503775
+  chooseSplits: 5.284708315
+  total: 5.908881257
+  findBestSplits: 5.90712216
+  chooseSplits: 5.90636639
+  total: 7.582321878
+  findBestSplits: 7.581011465
+  chooseSplits: 7.580335997
+  total: 7.130055489
+  findBestSplits: 7.128343888
+  chooseSplits: 7.127424732
+  buildMetadata: 6.811872489
+  building tree 32: 4.948063629
+  building tree 35: 4.955754827
+  building tree 29: 4.737244717
+  init: 0.008816226
+  building tree 20: 4.113398227
+  building tree 14: 4.41422257
+  building tree 38: 7.592845307
+  building tree 23: 5.606340311
+  total: 242.591557936
+  building tree 3: 6.659834676
+  building tree 17: 4.003816035
+  building tree 26: 4.891482191
+  building tree 6: 5.695716501
+  building tree 11: 8.434798855
+  building tree 0: 20.425580016
+  building tree 9: 5.856119847
+  building tree 31: 4.879032348
+  building tree 25: 4.883987891
+  building tree 28: 4.74150546
+  building tree 34: 5.048958937
+  building tree 8: 5.144197148
+  building tree 13: 5.717026977
+  building tree 2: 7.182342417
+  building tree 16: 3.977742883
+  building tree 37: 5.921681908
+  building tree 22: 5.093430777
+  building tree 10: 10.848851557
+  building tree 5: 6.720553033
+  building tree 19: 4.583654739
+  building tree 36: 5.294643667
+  findSplits: 3.284886334
+  building tree 24: 4.94338958
+  building tree 39: 7.144714247
+  building tree 30: 4.934364932
+  building tree 18: 4.415106635
+  building tree 33: 4.701382551
+  building tree 27: 5.082361388
+  building tree 7: 6.199605698
+  building tree 12: 8.116992104
+  building tree 1: 7.728088283
+  building tree 15: 4.300194928
+  building tree 21: 5.227187508
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.apache.spark.util.SizeEstimator$ (file:/opt/spark/jars/spark-core_2.12-3.5.3.jar) to field java.nio.charset.Charset.name
+WARNING: Please consider reporting this to the maintainers of org.apache.spark.util.SizeEstimator$
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
++- Project [Canal_ID#0, Producto_ID#2, Agencia_ID#1, Ruta_SAK#4, Cliente_ID#3L, Semana#29, State#19, Demanda_uni_equil#9, unit_price#23, d#70, pair_mean#6769, pair_last#6770, pair_weeks#6771L, client_mean#6772, client_weeks#6773L, route_product_mean#6774, agency_product_mean#6775, product_mean#6776, product_price#6777, channel_mean#6778, has_pair#6677, baseline_log#6699, product_baseline_log#6722, features#13822, UDF(features#13822) AS gbt_log#13850]
+   +- Project [Canal_ID#0, Producto_ID#2, Agencia_ID#1, Ruta_SAK#4, Cliente_ID#3L, Semana#29, State#19, Demanda_uni_equil#9, unit_price#23, d#70, pair_mean#6769, pair_last#6770, pair_weeks#6771L, client_mean#6772, client_weeks#6773L, route_product_mean#6774, agency_product_mean#6775, product_mean#6776, product_price#6777, channel_mean#6778, has_pair#6677, baseline_log#6699, product_baseline_log#6722, UDF(struct(pair_mean, pair_mean#6769, pair_last, pair_last#6770, pair_weeks_double_VectorAssembler_ad6e3dfc8629, cast(pair_wee... MapPartitionsRDD[1225] at count at <unknown>:0), which has no missing parents
++- Project [Canal_ID#0, Producto_ID#2, Agencia_ID#1, Ruta_SAK#4, Cliente_ID#3L, Semana#29, State#19, Demanda_uni_equil#9, unit_price#23, d#70, pair_mean#6769, pair_last#6770, pair_weeks#6771L, client_mean#6772, client_weeks#6773L, route_product_mean#6774, agency_product_mean#6775, product_mean#6776, product_price#6777, channel_mean#6778, has_pair#6677, baseline_log#6699, product_baseline_log#6722, features#13822, UDF(features#13822) AS gbt_log#13850]
+   +- Project [Canal_ID#0, Producto_ID#2, Agencia_ID#1, Ruta_SAK#4, Cliente_ID#3L, Semana#29, State#19, Demanda_uni_equil#9, unit_price#23, d#70, pair_mean#6769, pair_last#6770, pair_weeks#6771L, client_mean#6772, client_weeks#6773L, route_product_mean#6774, agency_product_mean#6775, product_mean#6776, product_price#6777, channel_mean#6778, has_pair#6677, baseline_log#6699, product_baseline_log#6722, UDF(struct(pair_mean, pair_mean#6769, pair_last, pair_last#6770, pair_weeks_double_VectorAssembler_ad6e3dfc8629, cast(pair_wee... MapPartitionsRDD[1225] at count at <unknown>:0) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14))
+[forecast] RMSLE week 9: {'product_baseline': 0.6299415366218412, 'history_baseline': 0.5289081727841654, 'gbt': 0.4746799735879497}
+[forecast] WAPE state x channel: {'gbt_corrected': 7.296323277696576, 'gbt_raw': 12.559751583816997, 'history_baseline': 5.318332029223074}
+[forecast] forecast_demand_by_state_channel: 398 rows
+[forecast] report:
+{
+  "valid_rows": 208563,
+  "train_rows": 614132,
+  "new_pair_share_pct": 24.995325153550727,
+  "rmsle": {
+    "product_baseline": 0.6299415366218412,
+    "history_baseline": 0.5289081727841654,
+    "gbt": 0.4746799735879497
+  },
+  "rmsle_known_pair": {
+    "history_baseline": 0.48988315062735643,
+    "gbt": 0.4607972547875024
+  },
+  "rmsle_new_pair": {
+    "history_baseline": 0.6317029847797754,
+    "gbt": 0.5140930800856944
+  },
+  "wape_state_channel_pct": {
+    "gbt_corrected": 7.296323277696576,
+    "gbt_raw": 12.559751583816997,
+    "history_baseline": 5.318332029223074
+  },
+  "correction_factor_by_channel": {
+    "1": 1.1577431149859978,
+    "6": 1.2608033020274338,
+    "11": 1.2302033839312243,
+    "7": 1.2373204777448898,
+    "8": 1.1892238910677546,
+    "5": 1.4789343528435772,
+    "2": 1.1941042442437566,
+    "4": 1.1498204525432338
+  },
+  "feature_importance": {
+    "pair_mean": 0.48200878062868535,
+    "pair_last": 0.020998628938271154,
+    "pair_weeks": 0.015118102420231564,
+    "has_pair": 0.0002764450155563408,
+    "client_mean": 0.09682274703137844,
+    "client_weeks": 0.01424497793520347,
+    "route_product_mean": 0.15767942872406823,
+    "agency_product_mean": 0.0824960178927223,
+    "product_mean": 0.0504724450842074,
+    "product_price": 0.05728393226030248,
+    "channel_mean": 0.0225984940693733
+  },
+  "forecast_by_week": [
+    {
+      "Semana": 10,
+      "listed_rows": 3538385,
+      "gbt_units": 25984563.0,
+      "baseline_units": 24018563.0
+    },
+    {
+      "Semana": 11,
+      "listed_rows": 3460866,
+      "gbt_units": 25369758.0,
+      "baseline_units": 23579633.0
+    }
+  ],
+  "application_id": "app-20261104043422-0003"
+}
+== step: export
+== spark-submit export_postgres
+:: loading settings :: url = jar:file:/opt/spark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /tmp/.ivy2/cache
+The jars for the packages stored in: /tmp/.ivy2/jars
+org.apache.hadoop#hadoop-aws added as a dependency
+com.amazonaws#aws-java-sdk-bundle added as a dependency
+org.postgresql#postgresql added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-bb7e6740-96c3-4ba3-aa5c-c0b91c48410f;1.0
+	confs: [default]
+	found org.apache.hadoop#hadoop-aws;3.3.4 in central
+	found com.amazonaws#aws-java-sdk-bundle;1.12.262 in central
+	found org.wildfly.openssl#wildfly-openssl;1.0.7.Final in central
+	found org.postgresql#postgresql;42.7.4 in central
+	found org.checkerframework#checker-qual;3.42.0 in central
+:: resolution report :: resolve 274ms :: artifacts dl 13ms
+	:: modules in use:
+	com.amazonaws#aws-java-sdk-bundle;1.12.262 from central in [default]
+	org.apache.hadoop#hadoop-aws;3.3.4 from central in [default]
+	org.checkerframework#checker-qual;3.42.0 from central in [default]
+	org.postgresql#postgresql;42.7.4 from central in [default]
+	org.wildfly.openssl#wildfly-openssl;1.0.7.Final from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   5   |   0   |   0   |   0   ||   5   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-bb7e6740-96c3-4ba3-aa5c-c0b91c48410f
+	confs: [default]
+	0 artifacts copied, 5 already retrieved (0kB/10ms)
+[bimbo-export-postgres] applicationId=app-20261104044237-0004
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by py4j.reflection.ReflectionShim (file:/opt/spark/jars/py4j-0.10.9.7.jar) to method java.sql.DriverManager.getConnection(java.lang.String,java.util.Properties,java.lang.Class)
+WARNING: Please consider reporting this to the maintainers of py4j.reflection.ReflectionShim
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+[export] gold.weekly_demand_by_state_channel: 1,393 rows
+[export] gold.return_rate_by_product_agency_route: 1,062,353 rows
+[export] gold.product_ranking_by_state: 17,604 rows
+[export] gold.client_segments: 880,604 rows
+[export] gold.outliers_by_channel: 9 rows
+[export] gold.forecast_metrics: 3 rows
+[export] gold.forecast_demand_by_state_channel: 398 rows
+== done. Spark history: http://localhost:18080  Metabase: http://localhost:3000

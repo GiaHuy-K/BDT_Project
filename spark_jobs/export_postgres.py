@@ -10,6 +10,7 @@ INDEXES = {
     "return_rate_by_product_agency_route": ["is_anomaly, return_rate DESC"],
     "product_ranking_by_state": ['"State", rank'],
     "client_segments": ["segment"],
+    "forecast_demand_by_state_channel": ['"State", "Canal_ID", "Semana"'],
 }
 
 

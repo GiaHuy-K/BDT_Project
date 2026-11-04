@@ -1,7 +1,8 @@
 name: bimbo-pipeline
 
 x-spark-common: &spark-common
-  image: apache/spark:3.5.3
+  image: bimbo-spark:3.5.3
+  build: ./docker/spark
   env_file: .env
   environment:
     MINIO_ENDPOINT: http://minio:9000

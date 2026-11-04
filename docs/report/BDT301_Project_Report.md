@@ -203,6 +203,22 @@ Dashboard Metabase `Grupo Bimbo` đọc trực tiếp schema `gold` trong Postgr
 
 ---
 
+### 5.5. Mở rộng sau EDA: Ngưỡng theo Kênh và Dự báo
+EDA (`docs/eda/EDA_report.md`) cho thấy hai điểm dẫn tới hai bổ sung vào pipeline.
+
+**Ngưỡng outlier theo kênh.** Một ngưỡng chung (249 đơn vị) gắn cờ 13.19% số dòng của kênh 5 nhưng chỉ 0.01% của kênh 1, vì đơn hàng kênh 5 vốn lớn. Silver thêm cột `is_outlier_channel`, mỗi kênh dùng phân vị 99.9% của chính nó; cột cũ giữ nguyên nên Q1–Q4 không đổi. Kết quả: 63,626 dòng trước đây không bị để ý nay được gắn cờ, chủ yếu ở kênh 1 (ngưỡng 111). Cờ chỉ cho biết dòng lớn so với kênh của nó, chưa khẳng định là lỗi.
+
+**Dự báo nhu cầu.** Nhu cầu của một cặp khách × sản phẩm khá bền vững (tự tương quan khoảng 0.79), nên `spark_jobs/forecast.py` dùng GBT của Spark MLlib trên các đặc trưng lịch sử. Mô hình học trên tuần 6–8 và được kiểm tra trên tuần 9, với 208,563 dòng của khách chưa dùng để học; đặc trưng chỉ lấy dữ liệu từ 2 tuần trước trở về.
+
+| Mô hình | RMSLE, tất cả | RMSLE, cặp đã có lịch sử | RMSLE, cặp mới | Sai số tổng bang × kênh (WAPE) |
+| :--- | ---: | ---: | ---: | ---: |
+| Baseline: trung bình lịch sử | 0.529 | 0.490 | 0.632 | 5.3% |
+| GBT | 0.475 | 0.461 | 0.514 | 7.3% |
+
+GBT giảm 10.3% sai số ở từng dòng và 18.6% với cặp mới, nên hợp với câu hỏi giao bao nhiêu cho từng cửa hàng. Khi cộng lên bang × kênh, baseline lại chính xác hơn, nên bảng `gold.forecast_demand_by_state_channel` lưu cả hai. Kết quả mới được kiểm tra trên 1 tuần và mẫu 2% khách; `test.csv` chỉ có khoảng 1/3 số dòng của một tuần, nên tổng dự báo không phải nhu cầu toàn quốc.
+
+---
+
 ## 6. Độ tin cậy, Rủi ro Thất bại & Đánh đổi Kiến trúc (Reliability & Trade-offs)
 
 ### 6.1. Nhận diện Rủi ro Thất bại và Giải pháp
@@ -214,7 +230,7 @@ Dashboard Metabase `Grupo Bimbo` đọc trực tiếp schema `gold` trong Postgr
    - *Giải pháp:* Thiết lập cơ chế kiểm tra **SHA-256 checksum** và manifest (số byte, số dòng của từng file) tại tầng Ingestion và chốt chặn **Invariant Check** ở Silver: nếu số lượng dòng `fact_sales + rejected != bronze_train`, toàn bộ tiến trình sẽ báo lỗi và dừng thực thi (fail-fast), ngăn chặn dữ liệu bẩn tràn vào kho báo cáo.
 
 ### 6.2. Phân tích Đánh đổi Kiến trúc (Trade-offs)
-* **Batch Processing vs. Real-time Streaming:** Chu kỳ phân phối của Grupo Bimbo được hoạch định theo ngày và tuần. Dữ liệu đến theo tuần và hàng trả lại chỉ được ghi nhận ở chu kỳ giao sau (`Dev_proxima`), nên batch là đủ: cụm Spark chỉ cần chạy khi có dữ liệu mới, không phải duy trì Kafka + Spark Streaming 24/7. Đổi lại, kết quả có độ trễ bằng một lần chạy pipeline (7 phút 16 giây cho toàn bộ pipeline, từ ingest đến export, trong lần chạy làm bằng chứng).
+* **Batch Processing vs. Real-time Streaming:** Chu kỳ phân phối của Grupo Bimbo được hoạch định theo ngày và tuần. Dữ liệu đến theo tuần và hàng trả lại chỉ được ghi nhận ở chu kỳ giao sau (`Dev_proxima`), nên batch là đủ: cụm Spark chỉ cần chạy khi có dữ liệu mới, không phải duy trì Kafka + Spark Streaming 24/7. Đổi lại, kết quả có độ trễ bằng một lần chạy pipeline (khoảng 19 phút cho 5 bước Spark trong lần chạy làm bằng chứng, trên máy 12 CPU, 8 GB RAM cho Docker; trước khi có bước `forecast`, nhóm từng đo 7 phút 16 giây trên máy khác).
 * **Normalized vs. Denormalized Storage:** Tầng Silver duy trì chuẩn hóa Star Schema để tối ưu dung lượng lưu trữ Parquet; tầng Gold làm phẳng (denormalize) thành các bảng tổng hợp để đưa sang PostgreSQL. Dashboard chỉ đọc 1.96 triệu dòng Gold thay vì join 74.2 triệu dòng fact. Đổi lại, dữ liệu bị lặp (tên sản phẩm, bang nằm sẵn trong từng bảng) và phải chạy lại Gold khi dimension thay đổi.
 
 ---
@@ -228,7 +244,7 @@ Dashboard Metabase `Grupo Bimbo` đọc trực tiếp schema `gold` trong Postgr
 * **Hướng phát triển:** 
   1. Triển khai **Apache Airflow** để điều phối và lập lịch pipeline tự động.
   2. Nâng cấp định dạng lưu trữ sang **Delta Lake** hoặc **Apache Iceberg** để hỗ trợ giao dịch ACID và Time-Travel.
-  3. Xây dựng mô hình Machine Learning dự báo nhu cầu chính xác cho tuần 10–11 sử dụng thư viện **Spark MLlib** (ví dụ: GBDT / Random Forest Regressor).
+  3. Kiểm tra mô hình dự báo trên nhiều tuần và toàn bộ khách; thử cải thiện sai số ở mức tổng hợp.
 
 ---
 
