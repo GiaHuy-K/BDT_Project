@@ -156,7 +156,7 @@ Dashboard Metabase `Grupo Bimbo` đọc trực tiếp schema `gold` trong Postgr
 
 * **Phát hiện:**
   * Nhu cầu toàn quốc ổn định trong khoảng 73.9–79.6 triệu đơn vị/tuần. Tuần 9 thấp hơn tuần 3 khoảng 3.4%, nhưng lượng hàng trả lại tăng 27.6% (1.29 → 1.64 triệu đơn vị), làm tỷ lệ trả/nhu cầu tăng từ 1.66% lên 2.19%.
-  * Kênh 1 chiếm 91% số dòng giao dịch nhưng chỉ 72.2% nhu cầu và 61.8% doanh thu. Kênh 2 chỉ có 9.6% nhu cầu nhưng mang về 18.5% doanh thu, nên giá trị mỗi đơn vị cao hơn hẳn. Kênh 5 và kênh 8 có tỷ lệ trả theo giá trị cao nhất (5.3% và 4.2%, so với mức chung 1.8%).
+  * Kênh 1 chiếm 91% số dòng giao dịch nhưng chỉ 72.1% nhu cầu và 61.8% doanh thu. Kênh 2 chỉ có 9.6% nhu cầu nhưng mang về 18.5% doanh thu, nên giá trị mỗi đơn vị cao hơn hẳn. Kênh 5 và kênh 8 có tỷ lệ trả theo giá trị cao nhất (5.3% và 4.1%, so với mức chung 1.8%).
   * Doanh thu tập trung ở vùng thủ đô: Estado de México (13.6%) và Ciudad de México / D.F. (12.6%), tiếp theo là Jalisco (8.5%) và Nuevo León (5.6%), trên tổng 32 bang.
 * **Khuyến nghị:** Theo dõi xu hướng hàng trả tăng dần từ tuần 6 trước khi tăng sản lượng. Ưu tiên rà soát lượng giao cho kênh 5 và kênh 8. Lưu ý: dataset không công bố tên các kênh, nên nhóm chỉ so sánh theo mã `Canal_ID`.
 

@@ -56,6 +56,20 @@ Vào mục **+ New** $\to$ **SQL query**, chọn database `Grupo Bimbo Serving D
 
 ---
 
+## 2b. KPI và bảng chi tiết (thêm sau Q1–Q4)
+
+SQL nằm ở phần cuối [`cards.sql`](cards.sql). Các bảng outlier và dự báo chỉ có sau khi chạy bước `gold`, `forecast`, `export`.
+
+| Tab | Card | Dạng |
+| --- | --- | --- |
+| thẻ 1 (hàng đầu) | KPI 1–4: tổng nhu cầu, doanh thu thuần, % giá trị hàng trả, số điểm bán | Number |
+| Chi tiết bang & kênh | Table A theo bang · Table B theo kênh · Table C sản phẩm số 1 mỗi bang · Table D outlier ngưỡng chung vs theo kênh | Table |
+| Dự báo tuần 10–11 | Table E độ chính xác trên tuần 9 · Table F dự báo theo bang (GBT và baseline) | Table |
+
+Table F chỉ cộng các dòng có trong `test.csv` (khoảng 1/3 một tuần thường), không phải tổng nhu cầu toàn quốc.
+
+---
+
 ## 3. Gom vào Dashboard & Xuất Báo cáo
 
 1. Nhấn **+ New** $\to$ **Dashboard**, đặt tên: `Grupo Bimbo – Supply Chain Analytics`.
